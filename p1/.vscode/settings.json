@@ -1,0 +1,8 @@
+{
+    "search.useIgnoreFiles": true,
+    "files.associations": {
+        "*.css": "tailwindcss",
+        "__hash_table": "c",
+        "sstream": "c"
+    }
+}
