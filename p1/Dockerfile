@@ -1,12 +1,13 @@
-FROM debian
+FROM ubuntu:22.04
 
 RUN apt update
-RUN apt install build-essential -y --no-install-recommends
+RUN apt install build-essential strace valgrind -y --no-install-recommends
 
-ADD *.c .
-ADD *.h .
-ADD Makefile .
+
+ADD *.c *.h *.sh Makefile /app/
+
+WORKDIR /app
 
 RUN "make"
 
-ENTRYPOINT [ "./cs238" ]
+ENTRYPOINT [ "./run.sh"]
