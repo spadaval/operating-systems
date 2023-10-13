@@ -11,4 +11,4 @@ echo "\n\n\n"
 echo "==========================="
 echo "Running valgrind:"
 echo "==========================="
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt --track-fds=yes ./cs238 $1
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./cs238 $1

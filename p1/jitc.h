@@ -10,7 +10,9 @@
 #ifndef _JITC_H_
 #define _JITC_H_
 
-struct jitc;
+struct jitc {
+    void *handle;
+};
 
 /**
  * Compiles a C program into a dynamically loadable module.
@@ -21,7 +23,8 @@ struct jitc;
  * return: 0 on success, otherwise error
  */
 
-int jitc_compile(const char *input, const char *output);
+int
+jitc_compile(const char *input, const char *output);
 
 /**
  * Loads a dynamically loadable module into the calling process' memory for

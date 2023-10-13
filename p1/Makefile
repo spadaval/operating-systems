@@ -9,7 +9,7 @@
 
 CC     = gcc
 CFLAGS = -ansi -pedantic -Wall -Wextra -Werror -Wfatal-errors -fpic -O3 -std=c99
-LDLIBS =
+LDLIBS = -lm
 DEST   = cs238
 SRCS  := $(wildcard *.c)
 OBJS  := $(SRCS:.c=.o)

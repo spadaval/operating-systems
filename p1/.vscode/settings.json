@@ -3,6 +3,9 @@
     "files.associations": {
         "*.css": "tailwindcss",
         "__hash_table": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "cmath": "c",
+        "complex": "c",
+        "math.h": "c"
     }
 }

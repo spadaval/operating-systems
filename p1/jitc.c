@@ -16,6 +16,14 @@
 
 #include "system.h"
 
+#define DL_ASSERT(c)       \
+    dlerror();             \
+    c;                     \
+    char *err = dlerror(); \
+    if (err != NULL) {     \
+        EXIT(err);         \
+    }
+
 /**
  * Needs:
  *   fork()
@@ -27,8 +35,6 @@
  *   dlclose()
  *   dlsym()
  */
-
-// char *object_file = "out.o";
 
 /* private */ void run(char *command, char **args) {
     printf("executing command: %s ", command);
@@ -44,7 +50,7 @@
     if (pid == 0) { /* child */
         execv(command, args);
     } else {
-        int status;
+        int status = 1;
         waitpid(pid, &status, 0);
         if (WEXITSTATUS(status) != 0) {
             EXIT("subprocess execution failed");
@@ -54,47 +60,47 @@
     printf("done compiling.\n");
 }
 
+/*private*/ void validate_library(const char *output) {
+    FILE *f = fopen(output, "r");
+    if (f == NULL) EXIT("file doesn't exist");
+    fclose(f);
+
+    DL_ASSERT(dlopen(output, RTLD_LAZY));
+}
+
 int jitc_compile(const char *input, const char *output) {
 #ifdef __APPLE__
     run("/usr/bin/clang", (char *[]){"/usr/bin/clang", "-dynamiclib", (char *)input, "-o", (char *)output, NULL});
 #else
     char *object_file = "tmp.o";
-    // printf("compiling\n");
     run("/usr/bin/gcc", (char *[]){"/usr/bin/gcc", "-fPIC", "-c", (char *)input, "-o", object_file, NULL});
     run("/usr/bin/gcc", (char *[]){"/usr/bin/gcc", object_file, "-shared", "-o", (char *)output, NULL});
-    // printf("compile complete\nBundling...");
-    // run("/usr/bin/ar", (char *[]){"/usr/bin/ar", "rcs", (char *)output, object_file, NULL});
     file_delete(object_file);
 #endif
 
-    if (fopen(output, "r") == NULL) EXIT("compilation failed");
-    dlopen(output, RTLD_LAZY);
-    char *err = dlerror();
-    if (err != NULL) {
-        EXIT(err);
-    }
+    validate_library(output);
 
     return 0;
 }
 
 struct jitc *jitc_open(const char *pathname) {
-    printf("Trying to open JITC library: %s\n", pathname);
-    dlerror();
-    struct jitc *dylib = (struct jitc *)dlopen(pathname, RTLD_NOW);
-
-    char *err = dlerror();
-    if (err != NULL) {
-        EXIT(err);
-    }
-    return dylib;
+    printf("Trying to open dynamic library: %s\n", pathname);
+    DL_ASSERT(
+        struct jitc *dylib = (struct jitc *)dlopen(pathname, RTLD_NOW);)
+    struct jitc *jitc = (struct jitc *)malloc(sizeof(struct jitc));
+    jitc->handle = dylib;
+    return jitc;
 }
 
 void jitc_close(struct jitc *jitc) {
-    dlclose(jitc);
+    printf("Closing dynamic library\n");
+    dlerror();
+    DL_ASSERT(dlclose(jitc->handle));
+    free(jitc);
 }
 
 long jitc_lookup(struct jitc *jitc, const char *symbol) {
-    void *ptr = dlsym(jitc, symbol);
+    void *ptr = dlsym(jitc->handle, symbol);
     if (ptr == NULL) {
         EXIT("JITC: failed to find symbol");
     }

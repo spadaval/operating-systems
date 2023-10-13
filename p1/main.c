@@ -7,6 +7,8 @@
  * main.c
  */
 
+#include <math.h>
+
 #include "jitc.h"
 #include "parser.h"
 #include "system.h"
@@ -61,12 +63,16 @@ reflect(const struct parser_dag *dag, FILE *file) {
 
 static void
 generate(const struct parser_dag *dag, FILE *file) {
-    fprintf(file, "double evaluate(void) {\n");
+    fprintf(file, "double evaluate(double (*sigmoid)(double)) {\n");
     reflect(dag, file);
-    fprintf(file, "return t%d;\n}\n", dag->id);
+    fprintf(file, "return sigmoid(t%d);\n}\n", dag->id);
 }
 
-typedef double (*evaluate_t)(void);
+typedef double (*evaluate_t)(double (*sigmoid)(double));
+
+double sigmoid(double x) {
+    return 1.0 / (1.0 + exp(-x));
+}
 
 int main(int argc, char *argv[]) {
     const char *SOFILE = "./out.so";
@@ -117,7 +123,7 @@ int main(int argc, char *argv[]) {
         TRACE(0);
         return -1;
     }
-    printf("%f\n", fnc());
+    printf("%f\n", fnc(sigmoid));
 
     /* done */
 

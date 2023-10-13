@@ -1,1 +1,1 @@
-scheduler.o: scheduler.c system.h scheduler.h
+scheduler.o: scheduler.c scheduler.h system.h
