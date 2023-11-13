@@ -29,7 +29,7 @@ main(int argc, char *argv[])
 {
 	UNUSED(argc);
 	UNUSED(argv);
-
+	
 	if (scheduler_create(_thread_, "hello") ||
 	    scheduler_create(_thread_, "world") ||
 	    scheduler_create(_thread_, "love") ||

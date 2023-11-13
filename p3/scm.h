@@ -10,9 +10,18 @@
 #ifndef _SCM_H_
 #define _SCM_H_
 
+#include <stdint.h>
+#include <stdio.h>
+
 #include "system.h"
 
-struct scm;
+#define u8 uint8_t
+
+typedef struct scm {
+    u8 *base;
+    int capacity;
+    int utilized;
+} scm;
 
 /**
  * Initializes an SCM region using the file specified in pathname as the

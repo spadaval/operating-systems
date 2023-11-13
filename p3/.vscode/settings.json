@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.css": "tailwindcss",
+        "scm.h": "c",
+        "__config": "c",
+        "__nullptr": "c",
+        "stdint.h": "c"
+    }
+}

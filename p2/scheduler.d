@@ -1,1 +1,10 @@
-scheduler.o: scheduler.c scheduler.h system.h
+-ansi
+-pedantic
+-Wall
+-Wextra
+-Werror
+-Wfatal-errors
+-fpic
+-g
+-MM
+scheduler.c

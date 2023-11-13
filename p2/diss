@@ -1,0 +1,1122 @@
+
+cs238:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000100002bc8 <_main>:
+100002bc8: ff 43 01 d1 	sub	sp, sp, #80
+100002bcc: fd 7b 04 a9 	stp	x29, x30, [sp, #64]
+100002bd0: fd 03 01 91 	add	x29, sp, #64
+100002bd4: bf c3 1f b8 	stur	wzr, [x29, #-4]
+100002bd8: a0 83 1f b8 	stur	w0, [x29, #-8]
+100002bdc: a1 03 1f f8 	stur	x1, [x29, #-16]
+100002be0: 01 00 00 14 	b	0x100002be4 <_main+0x1c>
+100002be4: 01 00 00 14 	b	0x100002be8 <_main+0x20>
+100002be8: 01 00 00 14 	b	0x100002bec <_main+0x24>
+100002bec: 01 00 00 14 	b	0x100002bf0 <_main+0x28>
+100002bf0: 00 00 00 90 	adrp	x0, 0x100002000 <_main+0x28>
+100002bf4: 00 00 35 91 	add	x0, x0, #3392
+100002bf8: 01 00 00 b0 	adrp	x1, 0x100003000 <_main+0x34>
+100002bfc: 21 e0 31 91 	add	x1, x1, #3192
+100002c00: b3 01 00 94 	bl	0x1000032cc <_scheduler_create>
+100002c04: 08 00 00 71 	subs	w8, w0, #0
+100002c08: e8 07 9f 1a 	cset	w8, ne
+100002c0c: c8 04 00 37 	tbnz	w8, #0, 0x100002ca4 <_main+0xdc>
+100002c10: 01 00 00 14 	b	0x100002c14 <_main+0x4c>
+100002c14: 00 00 00 90 	adrp	x0, 0x100002000 <_main+0x4c>
+100002c18: 00 00 35 91 	add	x0, x0, #3392
+100002c1c: 01 00 00 b0 	adrp	x1, 0x100003000 <_main+0x58>
+100002c20: 21 f8 31 91 	add	x1, x1, #3198
+100002c24: aa 01 00 94 	bl	0x1000032cc <_scheduler_create>
+100002c28: 08 00 00 71 	subs	w8, w0, #0
+100002c2c: e8 07 9f 1a 	cset	w8, ne
+100002c30: a8 03 00 37 	tbnz	w8, #0, 0x100002ca4 <_main+0xdc>
+100002c34: 01 00 00 14 	b	0x100002c38 <_main+0x70>
+100002c38: 00 00 00 90 	adrp	x0, 0x100002000 <_main+0x70>
+100002c3c: 00 00 35 91 	add	x0, x0, #3392
+100002c40: 01 00 00 b0 	adrp	x1, 0x100003000 <_main+0x7c>
+100002c44: 21 10 32 91 	add	x1, x1, #3204
+100002c48: a1 01 00 94 	bl	0x1000032cc <_scheduler_create>
+100002c4c: 08 00 00 71 	subs	w8, w0, #0
+100002c50: e8 07 9f 1a 	cset	w8, ne
+100002c54: 88 02 00 37 	tbnz	w8, #0, 0x100002ca4 <_main+0xdc>
+100002c58: 01 00 00 14 	b	0x100002c5c <_main+0x94>
+100002c5c: 00 00 00 90 	adrp	x0, 0x100002000 <_main+0x94>
+100002c60: 00 00 35 91 	add	x0, x0, #3392
+100002c64: 01 00 00 b0 	adrp	x1, 0x100003000 <_main+0xa0>
+100002c68: 21 24 32 91 	add	x1, x1, #3209
+100002c6c: 98 01 00 94 	bl	0x1000032cc <_scheduler_create>
+100002c70: 08 00 00 71 	subs	w8, w0, #0
+100002c74: e8 07 9f 1a 	cset	w8, ne
+100002c78: 68 01 00 37 	tbnz	w8, #0, 0x100002ca4 <_main+0xdc>
+100002c7c: 01 00 00 14 	b	0x100002c80 <_main+0xb8>
+100002c80: 00 00 00 90 	adrp	x0, 0x100002000 <_main+0xb8>
+100002c84: 00 00 35 91 	add	x0, x0, #3392
+100002c88: 01 00 00 b0 	adrp	x1, 0x100003000 <_main+0xc4>
+100002c8c: 21 38 32 91 	add	x1, x1, #3214
+100002c90: 8f 01 00 94 	bl	0x1000032cc <_scheduler_create>
+100002c94: 08 00 00 71 	subs	w8, w0, #0
+100002c98: e8 17 9f 1a 	cset	w8, eq
+100002c9c: 48 04 00 37 	tbnz	w8, #0, 0x100002d24 <_main+0x15c>
+100002ca0: 01 00 00 14 	b	0x100002ca4 <_main+0xdc>
+100002ca4: 01 00 00 14 	b	0x100002ca8 <_main+0xe0>
+100002ca8: 08 00 00 d0 	adrp	x8, 0x100004000 <_main+0xe8>
+100002cac: 08 0d 40 f9 	ldr	x8, [x8, #24]
+100002cb0: 08 01 40 f9 	ldr	x8, [x8]
+100002cb4: a8 83 1e f8 	stur	x8, [x29, #-24]
+100002cb8: 00 00 80 d2 	mov	x0, #0
+100002cbc: e0 13 00 f9 	str	x0, [sp, #32]
+100002cc0: 51 03 00 94 	bl	0x100003a04 <_safe_strlen>
+100002cc4: e8 13 40 f9 	ldr	x8, [sp, #32]
+100002cc8: e9 03 00 aa 	mov	x9, x0
+100002ccc: a0 83 5e f8 	ldur	x0, [x29, #-24]
+100002cd0: 29 01 00 f1 	subs	x9, x9, #0
+100002cd4: e9 07 9f 1a 	cset	w9, ne
+100002cd8: 2a 01 00 12 	and	w10, w9, #0x1
+100002cdc: 09 00 00 b0 	adrp	x9, 0x100003000 <_main+0x118>
+100002ce0: 29 bd 32 91 	add	x9, x9, #3247
+100002ce4: 4a 01 00 72 	ands	w10, w10, #0x1
+100002ce8: 08 11 89 9a 	csel	x8, x8, x9, ne
+100002cec: e9 03 00 91 	mov	x9, sp
+100002cf0: 0a 00 00 b0 	adrp	x10, 0x100003000 <_main+0x12c>
+100002cf4: 4a a1 32 91 	add	x10, x10, #3240
+100002cf8: 2a 01 00 f9 	str	x10, [x9]
+100002cfc: ca 04 80 d2 	mov	x10, #38
+100002d00: 2a 05 00 f9 	str	x10, [x9, #8]
+100002d04: 28 09 00 f9 	str	x8, [x9, #16]
+100002d08: 01 00 00 b0 	adrp	x1, 0x100003000 <_main+0x144>
+100002d0c: 21 58 32 91 	add	x1, x1, #3222
+100002d10: b9 03 00 94 	bl	0x100003bf4 <_vsnprintf+0x100003bf4>
+100002d14: 01 00 00 14 	b	0x100002d18 <_main+0x150>
+100002d18: 08 00 80 12 	mov	w8, #-1
+100002d1c: a8 c3 1f b8 	stur	w8, [x29, #-4]
+100002d20: 04 00 00 14 	b	0x100002d30 <_main+0x168>
+100002d24: 39 02 00 94 	bl	0x100003608 <_scheduler_execute>
+100002d28: bf c3 1f b8 	stur	wzr, [x29, #-4]
+100002d2c: 01 00 00 14 	b	0x100002d30 <_main+0x168>
+100002d30: a0 c3 5f b8 	ldur	w0, [x29, #-4]
+100002d34: fd 7b 44 a9 	ldp	x29, x30, [sp, #64]
+100002d38: ff 43 01 91 	add	sp, sp, #80
+100002d3c: c0 03 5f d6 	ret
+
+0000000100002d40 <__thread_>:
+100002d40: ff 03 01 d1 	sub	sp, sp, #64
+100002d44: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+100002d48: fd c3 00 91 	add	x29, sp, #48
+100002d4c: a0 83 1f f8 	stur	x0, [x29, #-8]
+100002d50: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100002d54: a8 03 1f f8 	stur	x8, [x29, #-16]
+100002d58: bf c3 1e b8 	stur	wzr, [x29, #-20]
+100002d5c: 01 00 00 14 	b	0x100002d60 <__thread_+0x20>
+100002d60: a8 c3 5e b8 	ldur	w8, [x29, #-20]
+100002d64: 08 91 01 71 	subs	w8, w8, #100
+100002d68: e8 b7 9f 1a 	cset	w8, ge
+100002d6c: 68 02 00 37 	tbnz	w8, #0, 0x100002db8 <__thread_+0x78>
+100002d70: 01 00 00 14 	b	0x100002d74 <__thread_+0x34>
+100002d74: aa 03 5f f8 	ldur	x10, [x29, #-16]
+100002d78: a9 c3 5e b8 	ldur	w9, [x29, #-20]
+100002d7c: e8 03 09 aa 	mov	x8, x9
+100002d80: e9 03 00 91 	mov	x9, sp
+100002d84: 2a 01 00 f9 	str	x10, [x9]
+100002d88: 28 05 00 f9 	str	x8, [x9, #8]
+100002d8c: 00 00 00 b0 	adrp	x0, 0x100003000 <__thread_+0x50>
+100002d90: 00 c4 32 91 	add	x0, x0, #3249
+100002d94: a7 03 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100002d98: 00 c4 89 d2 	mov	x0, #20000
+100002d9c: f9 02 00 94 	bl	0x100003980 <_us_sleep>
+100002da0: 94 02 00 94 	bl	0x1000037f0 <_scheduler_yield>
+100002da4: 01 00 00 14 	b	0x100002da8 <__thread_+0x68>
+100002da8: a8 c3 5e b8 	ldur	w8, [x29, #-20]
+100002dac: 08 05 00 11 	add	w8, w8, #1
+100002db0: a8 c3 1e b8 	stur	w8, [x29, #-20]
+100002db4: eb ff ff 17 	b	0x100002d60 <__thread_+0x20>
+100002db8: fd 7b 43 a9 	ldp	x29, x30, [sp, #48]
+100002dbc: ff 03 01 91 	add	sp, sp, #64
+100002dc0: c0 03 5f d6 	ret
+
+0000000100002dc4 <_print_trace>:
+100002dc4: ff 83 07 d1 	sub	sp, sp, #480
+100002dc8: fc 6f 1c a9 	stp	x28, x27, [sp, #448]
+100002dcc: fd 7b 1d a9 	stp	x29, x30, [sp, #464]
+100002dd0: fd 43 07 91 	add	x29, sp, #464
+100002dd4: 08 00 00 d0 	adrp	x8, 0x100004000 <_print_trace+0x18>
+100002dd8: 08 09 40 f9 	ldr	x8, [x8, #16]
+100002ddc: 08 01 40 f9 	ldr	x8, [x8]
+100002de0: a8 83 1e f8 	stur	x8, [x29, #-24]
+100002de4: e0 a3 00 91 	add	x0, sp, #40
+100002de8: e0 0b 00 f9 	str	x0, [sp, #16]
+100002dec: 41 01 80 52 	mov	w1, #10
+100002df0: 7b 03 00 94 	bl	0x100003bdc <_vsnprintf+0x100003bdc>
+100002df4: e8 03 00 aa 	mov	x8, x0
+100002df8: e0 0b 40 f9 	ldr	x0, [sp, #16]
+100002dfc: e8 1f 00 b9 	str	w8, [sp, #28]
+100002e00: e1 1f 40 b9 	ldr	w1, [sp, #28]
+100002e04: 79 03 00 94 	bl	0x100003be8 <_vsnprintf+0x100003be8>
+100002e08: e0 13 00 f9 	str	x0, [sp, #32]
+100002e0c: e8 13 40 f9 	ldr	x8, [sp, #32]
+100002e10: 08 01 00 f1 	subs	x8, x8, #0
+100002e14: e8 17 9f 1a 	cset	w8, eq
+100002e18: e8 03 00 37 	tbnz	w8, #0, 0x100002e94 <_print_trace+0xd0>
+100002e1c: 01 00 00 14 	b	0x100002e20 <_print_trace+0x5c>
+100002e20: e9 1f 40 b9 	ldr	w9, [sp, #28]
+100002e24: e8 03 09 aa 	mov	x8, x9
+100002e28: e9 03 00 91 	mov	x9, sp
+100002e2c: 28 01 00 f9 	str	x8, [x9]
+100002e30: 00 00 00 b0 	adrp	x0, 0x100003000 <_print_trace+0x70>
+100002e34: 00 e0 32 91 	add	x0, x0, #3256
+100002e38: 7e 03 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100002e3c: ff 1b 00 b9 	str	wzr, [sp, #24]
+100002e40: 01 00 00 14 	b	0x100002e44 <_print_trace+0x80>
+100002e44: e8 1b 40 b9 	ldr	w8, [sp, #24]
+100002e48: e9 1f 40 b9 	ldr	w9, [sp, #28]
+100002e4c: 08 01 09 6b 	subs	w8, w8, w9
+100002e50: e8 b7 9f 1a 	cset	w8, ge
+100002e54: e8 01 00 37 	tbnz	w8, #0, 0x100002e90 <_print_trace+0xcc>
+100002e58: 01 00 00 14 	b	0x100002e5c <_print_trace+0x98>
+100002e5c: e8 13 40 f9 	ldr	x8, [sp, #32]
+100002e60: e9 1b 80 b9 	ldrsw	x9, [sp, #24]
+100002e64: 08 79 69 f8 	ldr	x8, [x8, x9, lsl #3]
+100002e68: e9 03 00 91 	mov	x9, sp
+100002e6c: 28 01 00 f9 	str	x8, [x9]
+100002e70: 00 00 00 b0 	adrp	x0, 0x100003000 <_print_trace+0xb0>
+100002e74: 00 4c 33 91 	add	x0, x0, #3283
+100002e78: 6e 03 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100002e7c: 01 00 00 14 	b	0x100002e80 <_print_trace+0xbc>
+100002e80: e8 1b 40 b9 	ldr	w8, [sp, #24]
+100002e84: 08 05 00 11 	add	w8, w8, #1
+100002e88: e8 1b 00 b9 	str	w8, [sp, #24]
+100002e8c: ee ff ff 17 	b	0x100002e44 <_print_trace+0x80>
+100002e90: 01 00 00 14 	b	0x100002e94 <_print_trace+0xd0>
+100002e94: e0 13 40 f9 	ldr	x0, [sp, #32]
+100002e98: 5a 03 00 94 	bl	0x100003c00 <_vsnprintf+0x100003c00>
+100002e9c: a9 83 5e f8 	ldur	x9, [x29, #-24]
+100002ea0: 08 00 00 d0 	adrp	x8, 0x100004000 <_print_trace+0xe4>
+100002ea4: 08 09 40 f9 	ldr	x8, [x8, #16]
+100002ea8: 08 01 40 f9 	ldr	x8, [x8]
+100002eac: 08 01 09 eb 	subs	x8, x8, x9
+100002eb0: e8 17 9f 1a 	cset	w8, eq
+100002eb4: 68 00 00 37 	tbnz	w8, #0, 0x100002ec0 <_print_trace+0xfc>
+100002eb8: 01 00 00 14 	b	0x100002ebc <_print_trace+0xf8>
+100002ebc: 45 03 00 94 	bl	0x100003bd0 <_vsnprintf+0x100003bd0>
+100002ec0: fd 7b 5d a9 	ldp	x29, x30, [sp, #464]
+100002ec4: fc 6f 5c a9 	ldp	x28, x27, [sp, #448]
+100002ec8: ff 83 07 91 	add	sp, sp, #480
+100002ecc: c0 03 5f d6 	ret
+
+0000000100002ed0 <_to_str>:
+100002ed0: ff 43 00 d1 	sub	sp, sp, #16
+100002ed4: e0 07 00 b9 	str	w0, [sp, #4]
+100002ed8: e8 07 40 b9 	ldr	w8, [sp, #4]
+100002edc: e8 03 00 b9 	str	w8, [sp]
+100002ee0: 08 ed 01 71 	subs	w8, w8, #123
+100002ee4: e8 17 9f 1a 	cset	w8, eq
+100002ee8: 88 01 00 37 	tbnz	w8, #0, 0x100002f18 <_to_str+0x48>
+100002eec: 01 00 00 14 	b	0x100002ef0 <_to_str+0x20>
+100002ef0: e8 03 40 b9 	ldr	w8, [sp]
+100002ef4: 08 f1 01 71 	subs	w8, w8, #124
+100002ef8: e8 17 9f 1a 	cset	w8, eq
+100002efc: 68 01 00 37 	tbnz	w8, #0, 0x100002f28 <_to_str+0x58>
+100002f00: 01 00 00 14 	b	0x100002f04 <_to_str+0x34>
+100002f04: e8 03 40 b9 	ldr	w8, [sp]
+100002f08: 08 f5 01 71 	subs	w8, w8, #125
+100002f0c: e8 17 9f 1a 	cset	w8, eq
+100002f10: 48 01 00 37 	tbnz	w8, #0, 0x100002f38 <_to_str+0x68>
+100002f14: 0d 00 00 14 	b	0x100002f48 <_to_str+0x78>
+100002f18: 08 00 00 b0 	adrp	x8, 0x100003000 <_to_str+0x4c>
+100002f1c: 08 5d 33 91 	add	x8, x8, #3287
+100002f20: e8 07 00 f9 	str	x8, [sp, #8]
+100002f24: 0d 00 00 14 	b	0x100002f58 <_to_str+0x88>
+100002f28: 08 00 00 b0 	adrp	x8, 0x100003000 <_to_str+0x5c>
+100002f2c: 08 8d 33 91 	add	x8, x8, #3299
+100002f30: e8 07 00 f9 	str	x8, [sp, #8]
+100002f34: 09 00 00 14 	b	0x100002f58 <_to_str+0x88>
+100002f38: 08 00 00 b0 	adrp	x8, 0x100003000 <_to_str+0x6c>
+100002f3c: 08 ad 33 91 	add	x8, x8, #3307
+100002f40: e8 07 00 f9 	str	x8, [sp, #8]
+100002f44: 05 00 00 14 	b	0x100002f58 <_to_str+0x88>
+100002f48: 08 00 00 b0 	adrp	x8, 0x100003000 <_to_str+0x7c>
+100002f4c: 08 d5 33 91 	add	x8, x8, #3317
+100002f50: e8 07 00 f9 	str	x8, [sp, #8]
+100002f54: 01 00 00 14 	b	0x100002f58 <_to_str+0x88>
+100002f58: e0 07 40 f9 	ldr	x0, [sp, #8]
+100002f5c: ff 43 00 91 	add	sp, sp, #16
+100002f60: c0 03 5f d6 	ret
+
+0000000100002f64 <_get_thread>:
+100002f64: ff c3 00 d1 	sub	sp, sp, #48
+100002f68: fd 7b 02 a9 	stp	x29, x30, [sp, #32]
+100002f6c: fd 83 00 91 	add	x29, sp, #32
+100002f70: a0 c3 1f b8 	stur	w0, [x29, #-4]
+100002f74: 28 00 00 d0 	adrp	x8, 0x100008000 <_get_thread+0x28>
+100002f78: 08 01 40 f9 	ldr	x8, [x8]
+100002f7c: e8 0b 00 f9 	str	x8, [sp, #16]
+100002f80: ff 0f 00 b9 	str	wzr, [sp, #12]
+100002f84: 01 00 00 14 	b	0x100002f88 <_get_thread+0x24>
+100002f88: e8 0f 40 b9 	ldr	w8, [sp, #12]
+100002f8c: a9 c3 5f b8 	ldur	w9, [x29, #-4]
+100002f90: 08 01 09 6b 	subs	w8, w8, w9
+100002f94: e8 b7 9f 1a 	cset	w8, ge
+100002f98: 48 01 00 37 	tbnz	w8, #0, 0x100002fc0 <_get_thread+0x5c>
+100002f9c: 01 00 00 14 	b	0x100002fa0 <_get_thread+0x3c>
+100002fa0: e8 0b 40 f9 	ldr	x8, [sp, #16]
+100002fa4: 08 75 40 f9 	ldr	x8, [x8, #232]
+100002fa8: e8 0b 00 f9 	str	x8, [sp, #16]
+100002fac: 01 00 00 14 	b	0x100002fb0 <_get_thread+0x4c>
+100002fb0: e8 0f 40 b9 	ldr	w8, [sp, #12]
+100002fb4: 08 05 00 11 	add	w8, w8, #1
+100002fb8: e8 0f 00 b9 	str	w8, [sp, #12]
+100002fbc: f3 ff ff 17 	b	0x100002f88 <_get_thread+0x24>
+100002fc0: e8 0b 40 f9 	ldr	x8, [sp, #16]
+100002fc4: 08 e1 40 b9 	ldr	w8, [x8, #224]
+100002fc8: a9 c3 5f b8 	ldur	w9, [x29, #-4]
+100002fcc: 08 01 09 6b 	subs	w8, w8, w9
+100002fd0: e9 07 9f 1a 	cset	w9, ne
+100002fd4: e8 03 09 aa 	mov	x8, x9
+100002fd8: 08 01 40 f2 	ands	x8, x8, #0x1
+100002fdc: e8 17 9f 1a 	cset	w8, eq
+100002fe0: 48 01 00 37 	tbnz	w8, #0, 0x100003008 <_get_thread+0xa4>
+100002fe4: 01 00 00 14 	b	0x100002fe8 <_get_thread+0x84>
+100002fe8: 00 00 00 b0 	adrp	x0, 0x100003000 <_get_thread+0x88>
+100002fec: 00 e4 33 91 	add	x0, x0, #3321
+100002ff0: 01 00 00 b0 	adrp	x1, 0x100003000 <_get_thread+0x90>
+100002ff4: 21 10 34 91 	add	x1, x1, #3332
+100002ff8: 02 0d 80 52 	mov	w2, #104
+100002ffc: 03 00 00 b0 	adrp	x3, 0x100003000 <_get_thread+0x9c>
+100003000: 63 40 34 91 	add	x3, x3, #3344
+100003004: f0 02 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+100003008: 01 00 00 14 	b	0x10000300c <_get_thread+0xa8>
+10000300c: e0 0b 40 f9 	ldr	x0, [sp, #16]
+100003010: fd 7b 42 a9 	ldp	x29, x30, [sp, #32]
+100003014: ff c3 00 91 	add	sp, sp, #48
+100003018: c0 03 5f d6 	ret
+
+000000010000301c <_allocate_stack>:
+10000301c: ff 83 00 d1 	sub	sp, sp, #32
+100003020: fd 7b 01 a9 	stp	x29, x30, [sp, #16]
+100003024: fd 43 00 91 	add	x29, sp, #16
+100003028: 80 0c 80 d2 	mov	x0, #100
+10000302c: 00 02 a0 f2 	movk	x0, #16, lsl #16
+100003030: fa 02 00 94 	bl	0x100003c18 <_vsnprintf+0x100003c18>
+100003034: e0 07 00 f9 	str	x0, [sp, #8]
+100003038: e8 07 40 f9 	ldr	x8, [sp, #8]
+10000303c: 00 01 44 91 	add	x0, x8, #256, lsl #12   ; =1048576
+100003040: fd 7b 41 a9 	ldp	x29, x30, [sp, #16]
+100003044: ff 83 00 91 	add	sp, sp, #32
+100003048: c0 03 5f d6 	ret
+
+000000010000304c <_set_stack>:
+10000304c: ff 43 00 d1 	sub	sp, sp, #16
+100003050: e0 07 00 f9 	str	x0, [sp, #8]
+100003054: e8 07 40 f9 	ldr	x8, [sp, #8]
+100003058: 08 41 00 f1 	subs	x8, x8, #16
+10000305c: e8 03 00 f9 	str	x8, [sp]
+100003060: e8 03 40 f9 	ldr	x8, [sp]
+100003064: 1f 01 00 91 	mov	sp, x8
+100003068: e8 03 00 f9 	str	x8, [sp]
+10000306c: ff 43 00 91 	add	sp, sp, #16
+100003070: c0 03 5f d6 	ret
+
+0000000100003074 <_get_stack>:
+100003074: ff 43 00 d1 	sub	sp, sp, #16
+100003078: ff 07 00 f9 	str	xzr, [sp, #8]
+10000307c: e8 07 40 f9 	ldr	x8, [sp, #8]
+100003080: e9 07 40 f9 	ldr	x9, [sp, #8]
+100003084: e8 03 00 91 	mov	x8, sp
+100003088: e8 07 00 f9 	str	x8, [sp, #8]
+10000308c: e0 07 40 f9 	ldr	x0, [sp, #8]
+100003090: ff 43 00 91 	add	sp, sp, #16
+100003094: c0 03 5f d6 	ret
+
+0000000100003098 <_print_status>:
+100003098: ff 03 01 d1 	sub	sp, sp, #64
+10000309c: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+1000030a0: fd c3 00 91 	add	x29, sp, #48
+1000030a4: 28 00 00 b0 	adrp	x8, 0x100008000 <_print_status+0x20>
+1000030a8: e8 0f 00 f9 	str	x8, [sp, #24]
+1000030ac: 28 00 00 b0 	adrp	x8, 0x100008000 <_print_status+0x28>
+1000030b0: 08 01 00 91 	add	x8, x8, #0
+1000030b4: e8 0b 00 f9 	str	x8, [sp, #16]
+1000030b8: 43 ff ff 97 	bl	0x100002dc4 <_print_trace>
+1000030bc: e8 0b 40 f9 	ldr	x8, [sp, #16]
+1000030c0: 09 09 40 b9 	ldr	w9, [x8, #8]
+1000030c4: e8 03 09 aa 	mov	x8, x9
+1000030c8: e9 03 00 91 	mov	x9, sp
+1000030cc: 28 01 00 f9 	str	x8, [x9]
+1000030d0: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x38>
+1000030d4: 00 a8 34 91 	add	x0, x0, #3370
+1000030d8: d6 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000030dc: e8 0f 40 f9 	ldr	x8, [sp, #24]
+1000030e0: 08 01 40 f9 	ldr	x8, [x8]
+1000030e4: a8 83 1f f8 	stur	x8, [x29, #-8]
+1000030e8: bf 43 1f b8 	stur	wzr, [x29, #-12]
+1000030ec: 01 00 00 14 	b	0x1000030f0 <_print_status+0x58>
+1000030f0: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000030f4: 08 01 00 f1 	subs	x8, x8, #0
+1000030f8: e8 17 9f 1a 	cset	w8, eq
+1000030fc: 08 02 00 37 	tbnz	w8, #0, 0x10000313c <_print_status+0xa4>
+100003100: 01 00 00 14 	b	0x100003104 <_print_status+0x6c>
+100003104: a9 43 5f b8 	ldur	w9, [x29, #-12]
+100003108: e8 03 09 aa 	mov	x8, x9
+10000310c: e9 03 08 aa 	mov	x9, x8
+100003110: 29 05 00 11 	add	w9, w9, #1
+100003114: a9 43 1f b8 	stur	w9, [x29, #-12]
+100003118: e9 03 00 91 	mov	x9, sp
+10000311c: 28 01 00 f9 	str	x8, [x9]
+100003120: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x88>
+100003124: 00 e0 34 91 	add	x0, x0, #3384
+100003128: c2 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000312c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003130: 08 75 40 f9 	ldr	x8, [x8, #232]
+100003134: a8 83 1f f8 	stur	x8, [x29, #-8]
+100003138: ee ff ff 17 	b	0x1000030f0 <_print_status+0x58>
+10000313c: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0xa4>
+100003140: 00 f8 34 91 	add	x0, x0, #3390
+100003144: bb 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003148: 28 00 00 b0 	adrp	x8, 0x100008000 <_print_status+0xc4>
+10000314c: 08 01 40 f9 	ldr	x8, [x8]
+100003150: a8 83 1f f8 	stur	x8, [x29, #-8]
+100003154: 01 00 00 14 	b	0x100003158 <_print_status+0xc0>
+100003158: a8 83 5f f8 	ldur	x8, [x29, #-8]
+10000315c: 08 01 00 f1 	subs	x8, x8, #0
+100003160: e8 17 9f 1a 	cset	w8, eq
+100003164: c8 01 00 37 	tbnz	w8, #0, 0x10000319c <_print_status+0x104>
+100003168: 01 00 00 14 	b	0x10000316c <_print_status+0xd4>
+10000316c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003170: 00 d1 40 b9 	ldr	w0, [x8, #208]
+100003174: 57 ff ff 97 	bl	0x100002ed0 <_to_str>
+100003178: e8 03 00 91 	mov	x8, sp
+10000317c: 00 01 00 f9 	str	x0, [x8]
+100003180: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0xe8>
+100003184: 00 00 35 91 	add	x0, x0, #3392
+100003188: aa 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000318c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003190: 08 75 40 f9 	ldr	x8, [x8, #232]
+100003194: a8 83 1f f8 	stur	x8, [x29, #-8]
+100003198: f0 ff ff 17 	b	0x100003158 <_print_status+0xc0>
+10000319c: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x104>
+1000031a0: 00 f8 34 91 	add	x0, x0, #3390
+1000031a4: a3 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000031a8: 28 00 00 b0 	adrp	x8, 0x100008000 <_print_status+0x124>
+1000031ac: 08 01 40 f9 	ldr	x8, [x8]
+1000031b0: a8 83 1f f8 	stur	x8, [x29, #-8]
+1000031b4: bf 43 1f b8 	stur	wzr, [x29, #-12]
+1000031b8: 01 00 00 14 	b	0x1000031bc <_print_status+0x124>
+1000031bc: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000031c0: 08 01 00 f1 	subs	x8, x8, #0
+1000031c4: e8 17 9f 1a 	cset	w8, eq
+1000031c8: 48 03 00 37 	tbnz	w8, #0, 0x100003230 <_print_status+0x198>
+1000031cc: 01 00 00 14 	b	0x1000031d0 <_print_status+0x138>
+1000031d0: e9 0b 40 f9 	ldr	x9, [sp, #16]
+1000031d4: a8 43 5f b8 	ldur	w8, [x29, #-12]
+1000031d8: 0a 05 00 11 	add	w10, w8, #1
+1000031dc: aa 43 1f b8 	stur	w10, [x29, #-12]
+1000031e0: 29 6d 40 f9 	ldr	x9, [x9, #216]
+1000031e4: 29 e1 40 b9 	ldr	w9, [x9, #224]
+1000031e8: 08 01 09 6b 	subs	w8, w8, w9
+1000031ec: e8 17 9f 1a 	cset	w8, eq
+1000031f0: 0a 01 00 12 	and	w10, w8, #0x1
+1000031f4: 09 00 00 90 	adrp	x9, 0x100003000 <_print_status+0x15c>
+1000031f8: 29 39 35 91 	add	x9, x9, #3406
+1000031fc: 08 00 00 90 	adrp	x8, 0x100003000 <_print_status+0x164>
+100003200: 08 19 35 91 	add	x8, x8, #3398
+100003204: 4a 01 00 72 	ands	w10, w10, #0x1
+100003208: 08 11 89 9a 	csel	x8, x8, x9, ne
+10000320c: e9 03 00 91 	mov	x9, sp
+100003210: 28 01 00 f9 	str	x8, [x9]
+100003214: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x17c>
+100003218: 00 00 35 91 	add	x0, x0, #3392
+10000321c: 85 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003220: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003224: 08 75 40 f9 	ldr	x8, [x8, #232]
+100003228: a8 83 1f f8 	stur	x8, [x29, #-8]
+10000322c: e4 ff ff 17 	b	0x1000031bc <_print_status+0x124>
+100003230: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x198>
+100003234: 00 f8 34 91 	add	x0, x0, #3390
+100003238: 7e 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000323c: 28 00 00 b0 	adrp	x8, 0x100008000 <_print_status+0x1b8>
+100003240: 08 01 40 f9 	ldr	x8, [x8]
+100003244: a8 83 1f f8 	stur	x8, [x29, #-8]
+100003248: bf 43 1f b8 	stur	wzr, [x29, #-12]
+10000324c: 01 00 00 14 	b	0x100003250 <_print_status+0x1b8>
+100003250: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003254: 08 01 00 f1 	subs	x8, x8, #0
+100003258: e8 17 9f 1a 	cset	w8, eq
+10000325c: a8 01 00 37 	tbnz	w8, #0, 0x100003290 <_print_status+0x1f8>
+100003260: 01 00 00 14 	b	0x100003264 <_print_status+0x1cc>
+100003264: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003268: 08 6d 40 f9 	ldr	x8, [x8, #216]
+10000326c: e9 03 00 91 	mov	x9, sp
+100003270: 28 01 00 f9 	str	x8, [x9]
+100003274: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x1dc>
+100003278: 00 68 35 91 	add	x0, x0, #3418
+10000327c: 6d 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003280: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003284: 08 75 40 f9 	ldr	x8, [x8, #232]
+100003288: a8 83 1f f8 	stur	x8, [x29, #-8]
+10000328c: f1 ff ff 17 	b	0x100003250 <_print_status+0x1b8>
+100003290: e8 0b 40 f9 	ldr	x8, [sp, #16]
+100003294: 08 6d 40 f9 	ldr	x8, [x8, #216]
+100003298: 09 e1 40 b9 	ldr	w9, [x8, #224]
+10000329c: e8 03 09 aa 	mov	x8, x9
+1000032a0: e9 03 00 91 	mov	x9, sp
+1000032a4: 28 01 00 f9 	str	x8, [x9]
+1000032a8: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x210>
+1000032ac: 00 88 35 91 	add	x0, x0, #3426
+1000032b0: 60 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000032b4: 00 00 00 90 	adrp	x0, 0x100003000 <_print_status+0x21c>
+1000032b8: 00 b8 35 91 	add	x0, x0, #3438
+1000032bc: 5d 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000032c0: fd 7b 43 a9 	ldp	x29, x30, [sp, #48]
+1000032c4: ff 03 01 91 	add	sp, sp, #64
+1000032c8: c0 03 5f d6 	ret
+
+00000001000032cc <_scheduler_create>:
+1000032cc: ff 03 01 d1 	sub	sp, sp, #64
+1000032d0: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+1000032d4: fd c3 00 91 	add	x29, sp, #48
+1000032d8: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_create+0x20>
+1000032dc: e8 07 00 f9 	str	x8, [sp, #8]
+1000032e0: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_create+0x28>
+1000032e4: 08 01 00 91 	add	x8, x8, #0
+1000032e8: e8 03 00 f9 	str	x8, [sp]
+1000032ec: a0 83 1f f8 	stur	x0, [x29, #-8]
+1000032f0: a1 03 1f f8 	stur	x1, [x29, #-16]
+1000032f4: 00 1e 80 d2 	mov	x0, #240
+1000032f8: 48 02 00 94 	bl	0x100003c18 <_vsnprintf+0x100003c18>
+1000032fc: e0 0f 00 f9 	str	x0, [sp, #24]
+100003300: e9 0f 40 f9 	ldr	x9, [sp, #24]
+100003304: a8 01 80 92 	mov	x8, #-14
+100003308: 28 6d 00 f9 	str	x8, [x9, #216]
+10000330c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003310: e9 0f 40 f9 	ldr	x9, [sp, #24]
+100003314: 28 01 00 f9 	str	x8, [x9]
+100003318: a8 03 5f f8 	ldur	x8, [x29, #-16]
+10000331c: e9 0f 40 f9 	ldr	x9, [sp, #24]
+100003320: 28 05 00 f9 	str	x8, [x9, #8]
+100003324: e9 0f 40 f9 	ldr	x9, [sp, #24]
+100003328: 68 0f 80 52 	mov	w8, #123
+10000332c: 28 d1 00 b9 	str	w8, [x9, #208]
+100003330: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_create+0x64>
+100003334: 00 c4 35 91 	add	x0, x0, #3441
+100003338: 3e 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000333c: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_create+0x70>
+100003340: 00 ec 35 91 	add	x0, x0, #3451
+100003344: 3b 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003348: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_create+0x7c>
+10000334c: 00 38 36 91 	add	x0, x0, #3470
+100003350: 38 02 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003354: e8 07 40 f9 	ldr	x8, [sp, #8]
+100003358: 08 01 40 f9 	ldr	x8, [x8]
+10000335c: 08 01 00 f1 	subs	x8, x8, #0
+100003360: e8 07 9f 1a 	cset	w8, ne
+100003364: 08 01 00 37 	tbnz	w8, #0, 0x100003384 <_scheduler_create+0xb8>
+100003368: 01 00 00 14 	b	0x10000336c <_scheduler_create+0xa0>
+10000336c: e8 0f 40 f9 	ldr	x8, [sp, #24]
+100003370: 1f e1 00 b9 	str	wzr, [x8, #224]
+100003374: e8 0f 40 f9 	ldr	x8, [sp, #24]
+100003378: 29 00 00 b0 	adrp	x9, 0x100008000 <_scheduler_create+0xc0>
+10000337c: 28 01 00 f9 	str	x8, [x9]
+100003380: 18 00 00 14 	b	0x1000033e0 <_scheduler_create+0x114>
+100003384: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_create+0xcc>
+100003388: 08 01 40 f9 	ldr	x8, [x8]
+10000338c: e8 0b 00 f9 	str	x8, [sp, #16]
+100003390: 01 00 00 14 	b	0x100003394 <_scheduler_create+0xc8>
+100003394: e8 0b 40 f9 	ldr	x8, [sp, #16]
+100003398: 08 75 40 f9 	ldr	x8, [x8, #232]
+10000339c: 08 01 00 f1 	subs	x8, x8, #0
+1000033a0: e8 17 9f 1a 	cset	w8, eq
+1000033a4: c8 00 00 37 	tbnz	w8, #0, 0x1000033bc <_scheduler_create+0xf0>
+1000033a8: 01 00 00 14 	b	0x1000033ac <_scheduler_create+0xe0>
+1000033ac: e8 0b 40 f9 	ldr	x8, [sp, #16]
+1000033b0: 08 75 40 f9 	ldr	x8, [x8, #232]
+1000033b4: e8 0b 00 f9 	str	x8, [sp, #16]
+1000033b8: f7 ff ff 17 	b	0x100003394 <_scheduler_create+0xc8>
+1000033bc: e8 0b 40 f9 	ldr	x8, [sp, #16]
+1000033c0: 08 e1 40 b9 	ldr	w8, [x8, #224]
+1000033c4: 08 05 00 11 	add	w8, w8, #1
+1000033c8: e9 0f 40 f9 	ldr	x9, [sp, #24]
+1000033cc: 28 e1 00 b9 	str	w8, [x9, #224]
+1000033d0: e8 0f 40 f9 	ldr	x8, [sp, #24]
+1000033d4: e9 0b 40 f9 	ldr	x9, [sp, #16]
+1000033d8: 28 75 00 f9 	str	x8, [x9, #232]
+1000033dc: 01 00 00 14 	b	0x1000033e0 <_scheduler_create+0x114>
+1000033e0: e9 03 40 f9 	ldr	x9, [sp]
+1000033e4: 28 09 40 b9 	ldr	w8, [x9, #8]
+1000033e8: 08 05 00 11 	add	w8, w8, #1
+1000033ec: 28 09 00 b9 	str	w8, [x9, #8]
+1000033f0: 00 00 80 52 	mov	w0, #0
+1000033f4: fd 7b 43 a9 	ldp	x29, x30, [sp, #48]
+1000033f8: ff 03 01 91 	add	sp, sp, #64
+1000033fc: c0 03 5f d6 	ret
+
+0000000100003400 <_launch>:
+100003400: ff 03 01 d1 	sub	sp, sp, #64
+100003404: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+100003408: fd c3 00 91 	add	x29, sp, #48
+10000340c: 28 00 00 b0 	adrp	x8, 0x100008000 <_launch+0x20>
+100003410: 08 01 00 91 	add	x8, x8, #0
+100003414: a8 03 1f f8 	stur	x8, [x29, #-16]
+100003418: a0 83 1f f8 	stur	x0, [x29, #-8]
+10000341c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003420: 08 d1 40 b9 	ldr	w8, [x8, #208]
+100003424: 08 ed 01 71 	subs	w8, w8, #123
+100003428: e9 07 9f 1a 	cset	w9, ne
+10000342c: e8 03 09 aa 	mov	x8, x9
+100003430: 08 01 40 f2 	ands	x8, x8, #0x1
+100003434: e8 17 9f 1a 	cset	w8, eq
+100003438: 48 01 00 37 	tbnz	w8, #0, 0x100003460 <_launch+0x60>
+10000343c: 01 00 00 14 	b	0x100003440 <_launch+0x40>
+100003440: 00 00 00 90 	adrp	x0, 0x100003000 <_launch+0x40>
+100003444: 00 50 36 91 	add	x0, x0, #3476
+100003448: 01 00 00 90 	adrp	x1, 0x100003000 <_launch+0x48>
+10000344c: 21 10 34 91 	add	x1, x1, #3332
+100003450: 82 18 80 52 	mov	w2, #196
+100003454: 03 00 00 90 	adrp	x3, 0x100003000 <_launch+0x54>
+100003458: 63 6c 36 91 	add	x3, x3, #3483
+10000345c: da 01 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+100003460: 01 00 00 14 	b	0x100003464 <_launch+0x64>
+100003464: a9 03 5f f8 	ldur	x9, [x29, #-16]
+100003468: a8 83 5f f8 	ldur	x8, [x29, #-8]
+10000346c: 28 6d 00 f9 	str	x8, [x9, #216]
+100003470: 00 00 00 90 	adrp	x0, 0x100003000 <_launch+0x70>
+100003474: 00 c4 35 91 	add	x0, x0, #3441
+100003478: e0 0b 00 f9 	str	x0, [sp, #16]
+10000347c: ed 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003480: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003484: 09 e1 40 b9 	ldr	w9, [x8, #224]
+100003488: e8 03 09 aa 	mov	x8, x9
+10000348c: e9 03 00 91 	mov	x9, sp
+100003490: 28 01 00 f9 	str	x8, [x9]
+100003494: 00 00 00 90 	adrp	x0, 0x100003000 <_launch+0x94>
+100003498: 00 e4 36 91 	add	x0, x0, #3513
+10000349c: e5 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000034a0: 00 00 00 90 	adrp	x0, 0x100003000 <_launch+0xa0>
+1000034a4: 00 38 36 91 	add	x0, x0, #3470
+1000034a8: e0 0f 00 f9 	str	x0, [sp, #24]
+1000034ac: e1 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000034b0: db fe ff 97 	bl	0x10000301c <_allocate_stack>
+1000034b4: e8 03 00 aa 	mov	x8, x0
+1000034b8: e0 0b 40 f9 	ldr	x0, [sp, #16]
+1000034bc: a9 83 5f f8 	ldur	x9, [x29, #-8]
+1000034c0: 28 6d 00 f9 	str	x8, [x9, #216]
+1000034c4: db 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000034c8: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000034cc: 08 6d 40 f9 	ldr	x8, [x8, #216]
+1000034d0: e9 03 00 91 	mov	x9, sp
+1000034d4: 28 01 00 f9 	str	x8, [x9]
+1000034d8: 00 00 00 90 	adrp	x0, 0x100003000 <_launch+0xd8>
+1000034dc: 00 54 37 91 	add	x0, x0, #3541
+1000034e0: d4 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000034e4: e0 0f 40 f9 	ldr	x0, [sp, #24]
+1000034e8: d2 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000034ec: a9 83 5f f8 	ldur	x9, [x29, #-8]
+1000034f0: 88 0f 80 52 	mov	w8, #124
+1000034f4: 28 d1 00 b9 	str	w8, [x9, #208]
+1000034f8: e8 fe ff 97 	bl	0x100003098 <_print_status>
+1000034fc: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003500: 00 6d 40 f9 	ldr	x0, [x8, #216]
+100003504: d2 fe ff 97 	bl	0x10000304c <_set_stack>
+100003508: a8 83 5f f8 	ldur	x8, [x29, #-8]
+10000350c: 08 01 40 f9 	ldr	x8, [x8]
+100003510: a9 83 5f f8 	ldur	x9, [x29, #-8]
+100003514: 20 05 40 f9 	ldr	x0, [x9, #8]
+100003518: 00 01 3f d6 	blr	x8
+10000351c: fd 7b 43 a9 	ldp	x29, x30, [sp, #48]
+100003520: ff 03 01 91 	add	sp, sp, #64
+100003524: c0 03 5f d6 	ret
+
+0000000100003528 <_resume>:
+100003528: ff c3 00 d1 	sub	sp, sp, #48
+10000352c: fd 7b 02 a9 	stp	x29, x30, [sp, #32]
+100003530: fd 83 00 91 	add	x29, sp, #32
+100003534: 29 00 00 b0 	adrp	x9, 0x100008000 <_resume+0x20>
+100003538: 29 01 00 91 	add	x9, x9, #0
+10000353c: e9 0b 00 f9 	str	x9, [sp, #16]
+100003540: a0 83 1f f8 	stur	x0, [x29, #-8]
+100003544: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003548: 28 6d 00 f9 	str	x8, [x9, #216]
+10000354c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003550: 08 d1 40 b9 	ldr	w8, [x8, #208]
+100003554: 08 f5 01 71 	subs	w8, w8, #125
+100003558: e9 07 9f 1a 	cset	w9, ne
+10000355c: e8 03 09 aa 	mov	x8, x9
+100003560: 08 01 40 f2 	ands	x8, x8, #0x1
+100003564: e8 17 9f 1a 	cset	w8, eq
+100003568: 48 01 00 37 	tbnz	w8, #0, 0x100003590 <_resume+0x68>
+10000356c: 01 00 00 14 	b	0x100003570 <_resume+0x48>
+100003570: 00 00 00 90 	adrp	x0, 0x100003000 <_resume+0x48>
+100003574: 00 dc 37 91 	add	x0, x0, #3575
+100003578: 01 00 00 90 	adrp	x1, 0x100003000 <_resume+0x50>
+10000357c: 21 10 34 91 	add	x1, x1, #3332
+100003580: 62 1a 80 52 	mov	w2, #211
+100003584: 03 00 00 90 	adrp	x3, 0x100003000 <_resume+0x5c>
+100003588: 63 f8 37 91 	add	x3, x3, #3582
+10000358c: 8e 01 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+100003590: 01 00 00 14 	b	0x100003594 <_resume+0x6c>
+100003594: 00 00 00 90 	adrp	x0, 0x100003000 <_resume+0x6c>
+100003598: 00 c4 35 91 	add	x0, x0, #3441
+10000359c: a5 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000035a0: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000035a4: 09 e1 40 b9 	ldr	w9, [x8, #224]
+1000035a8: e8 03 09 aa 	mov	x8, x9
+1000035ac: e9 03 00 91 	mov	x9, sp
+1000035b0: 28 01 00 f9 	str	x8, [x9]
+1000035b4: 00 00 00 90 	adrp	x0, 0x100003000 <_resume+0x8c>
+1000035b8: 00 68 38 91 	add	x0, x0, #3610
+1000035bc: 9d 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000035c0: 00 00 00 90 	adrp	x0, 0x100003000 <_resume+0x98>
+1000035c4: 00 38 36 91 	add	x0, x0, #3470
+1000035c8: 9a 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000035cc: b3 fe ff 97 	bl	0x100003098 <_print_status>
+1000035d0: e8 0b 40 f9 	ldr	x8, [sp, #16]
+1000035d4: 08 09 40 f9 	ldr	x8, [x8, #16]
+1000035d8: e9 03 00 91 	mov	x9, sp
+1000035dc: 28 01 00 f9 	str	x8, [x9]
+1000035e0: 00 00 00 90 	adrp	x0, 0x100003000 <_resume+0xb8>
+1000035e4: 00 d0 38 91 	add	x0, x0, #3636
+1000035e8: 92 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000035ec: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000035f0: 00 6d 40 f9 	ldr	x0, [x8, #216]
+1000035f4: 96 fe ff 97 	bl	0x10000304c <_set_stack>
+1000035f8: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000035fc: 00 41 00 91 	add	x0, x8, #16
+100003600: c1 01 80 52 	mov	w1, #14
+100003604: 82 01 00 94 	bl	0x100003c0c <_vsnprintf+0x100003c0c>
+
+0000000100003608 <_scheduler_execute>:
+100003608: ff 03 01 d1 	sub	sp, sp, #64
+10000360c: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+100003610: fd c3 00 91 	add	x29, sp, #48
+100003614: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_execute+0x20>
+100003618: e8 0f 00 f9 	str	x8, [sp, #24]
+10000361c: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_execute+0x28>
+100003620: 08 01 00 91 	add	x8, x8, #0
+100003624: e8 0b 00 f9 	str	x8, [sp, #16]
+100003628: 00 61 00 91 	add	x0, x8, #24
+10000362c: 84 01 00 94 	bl	0x100003c3c <_vsnprintf+0x100003c3c>
+100003630: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x28>
+100003634: 00 c4 35 91 	add	x0, x0, #3441
+100003638: 7e 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000363c: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x34>
+100003640: 00 3c 39 91 	add	x0, x0, #3663
+100003644: 7b 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003648: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x40>
+10000364c: 00 38 36 91 	add	x0, x0, #3470
+100003650: 78 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003654: 88 fe ff 97 	bl	0x100003074 <_get_stack>
+100003658: e8 03 00 91 	mov	x8, sp
+10000365c: 00 01 00 f9 	str	x0, [x8]
+100003660: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x58>
+100003664: 00 9c 39 91 	add	x0, x0, #3687
+100003668: 72 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000366c: e8 0f 40 f9 	ldr	x8, [sp, #24]
+100003670: 08 01 40 f9 	ldr	x8, [x8]
+100003674: 08 01 00 f1 	subs	x8, x8, #0
+100003678: e9 17 9f 1a 	cset	w9, eq
+10000367c: e8 03 09 aa 	mov	x8, x9
+100003680: 08 01 40 f2 	ands	x8, x8, #0x1
+100003684: e8 17 9f 1a 	cset	w8, eq
+100003688: 48 01 00 37 	tbnz	w8, #0, 0x1000036b0 <_scheduler_execute+0xa8>
+10000368c: 01 00 00 14 	b	0x100003690 <_scheduler_execute+0x88>
+100003690: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x88>
+100003694: 00 18 3a 91 	add	x0, x0, #3718
+100003698: 01 00 00 90 	adrp	x1, 0x100003000 <_scheduler_execute+0x90>
+10000369c: 21 10 34 91 	add	x1, x1, #3332
+1000036a0: 42 1c 80 52 	mov	w2, #226
+1000036a4: 03 00 00 90 	adrp	x3, 0x100003000 <_scheduler_execute+0x9c>
+1000036a8: 63 60 3a 91 	add	x3, x3, #3736
+1000036ac: 46 01 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+1000036b0: 01 00 00 14 	b	0x1000036b4 <_scheduler_execute+0xac>
+1000036b4: e8 0b 40 f9 	ldr	x8, [sp, #16]
+1000036b8: 08 6d 40 f9 	ldr	x8, [x8, #216]
+1000036bc: 08 01 00 f1 	subs	x8, x8, #0
+1000036c0: e8 07 9f 1a 	cset	w8, ne
+1000036c4: 28 02 00 37 	tbnz	w8, #0, 0x100003708 <_scheduler_execute+0x100>
+1000036c8: 01 00 00 14 	b	0x1000036cc <_scheduler_execute+0xc4>
+1000036cc: e9 0b 40 f9 	ldr	x9, [sp, #16]
+1000036d0: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_execute+0xdc>
+1000036d4: 0b 01 40 f9 	ldr	x11, [x8]
+1000036d8: 8a 0f 80 52 	mov	w10, #124
+1000036dc: 6a d1 00 b9 	str	w10, [x11, #208]
+1000036e0: 08 01 40 f9 	ldr	x8, [x8]
+1000036e4: 28 6d 00 f9 	str	x8, [x9, #216]
+1000036e8: 6c fe ff 97 	bl	0x100003098 <_print_status>
+1000036ec: e9 0b 40 f9 	ldr	x9, [sp, #16]
+1000036f0: 28 6d 40 f9 	ldr	x8, [x9, #216]
+1000036f4: 08 01 40 f9 	ldr	x8, [x8]
+1000036f8: 29 6d 40 f9 	ldr	x9, [x9, #216]
+1000036fc: 20 05 40 f9 	ldr	x0, [x9, #8]
+100003700: 00 01 3f d6 	blr	x8
+100003704: 38 00 00 14 	b	0x1000037e4 <_scheduler_execute+0x1dc>
+100003708: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x100>
+10000370c: 00 c4 35 91 	add	x0, x0, #3441
+100003710: 48 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003714: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x10c>
+100003718: 00 c0 3a 91 	add	x0, x0, #3760
+10000371c: 45 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003720: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_execute+0x118>
+100003724: 00 38 36 91 	add	x0, x0, #3470
+100003728: 42 01 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000372c: e8 0b 40 f9 	ldr	x8, [sp, #16]
+100003730: 08 6d 40 f9 	ldr	x8, [x8, #216]
+100003734: 00 e1 40 b9 	ldr	w0, [x8, #224]
+100003738: 0b fe ff 97 	bl	0x100002f64 <_get_thread>
+10000373c: a0 83 1f f8 	stur	x0, [x29, #-8]
+100003740: 01 00 00 14 	b	0x100003744 <_scheduler_execute+0x13c>
+100003744: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003748: 08 75 40 f9 	ldr	x8, [x8, #232]
+10000374c: 08 01 00 f1 	subs	x8, x8, #0
+100003750: e8 07 9f 1a 	cset	w8, ne
+100003754: c8 00 00 37 	tbnz	w8, #0, 0x10000376c <_scheduler_execute+0x164>
+100003758: 01 00 00 14 	b	0x10000375c <_scheduler_execute+0x154>
+10000375c: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_execute+0x168>
+100003760: 08 01 40 f9 	ldr	x8, [x8]
+100003764: e8 07 00 f9 	str	x8, [sp, #8]
+100003768: 05 00 00 14 	b	0x10000377c <_scheduler_execute+0x174>
+10000376c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003770: 08 75 40 f9 	ldr	x8, [x8, #232]
+100003774: e8 07 00 f9 	str	x8, [sp, #8]
+100003778: 01 00 00 14 	b	0x10000377c <_scheduler_execute+0x174>
+10000377c: e8 07 40 f9 	ldr	x8, [sp, #8]
+100003780: a8 83 1f f8 	stur	x8, [x29, #-8]
+100003784: 01 00 00 14 	b	0x100003788 <_scheduler_execute+0x180>
+100003788: a8 83 5f f8 	ldur	x8, [x29, #-8]
+10000378c: 08 d1 40 b9 	ldr	w8, [x8, #208]
+100003790: 08 f1 01 71 	subs	w8, w8, #124
+100003794: e8 17 9f 1a 	cset	w8, eq
+100003798: 68 fd 07 37 	tbnz	w8, #0, 0x100003744 <_scheduler_execute+0x13c>
+10000379c: 01 00 00 14 	b	0x1000037a0 <_scheduler_execute+0x198>
+1000037a0: e9 0b 40 f9 	ldr	x9, [sp, #16]
+1000037a4: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000037a8: 28 6d 00 f9 	str	x8, [x9, #216]
+1000037ac: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000037b0: a8 03 1f f8 	stur	x8, [x29, #-16]
+1000037b4: a8 03 5f f8 	ldur	x8, [x29, #-16]
+1000037b8: 08 d1 40 b9 	ldr	w8, [x8, #208]
+1000037bc: 08 ed 01 71 	subs	w8, w8, #123
+1000037c0: e8 07 9f 1a 	cset	w8, ne
+1000037c4: a8 00 00 37 	tbnz	w8, #0, 0x1000037d8 <_scheduler_execute+0x1d0>
+1000037c8: 01 00 00 14 	b	0x1000037cc <_scheduler_execute+0x1c4>
+1000037cc: a0 03 5f f8 	ldur	x0, [x29, #-16]
+1000037d0: 0c ff ff 97 	bl	0x100003400 <_launch>
+1000037d4: 04 00 00 14 	b	0x1000037e4 <_scheduler_execute+0x1dc>
+1000037d8: a0 03 5f f8 	ldur	x0, [x29, #-16]
+1000037dc: 53 ff ff 97 	bl	0x100003528 <_resume>
+1000037e0: 01 00 00 14 	b	0x1000037e4 <_scheduler_execute+0x1dc>
+1000037e4: fd 7b 43 a9 	ldp	x29, x30, [sp, #48]
+1000037e8: ff 03 01 91 	add	sp, sp, #64
+1000037ec: c0 03 5f d6 	ret
+
+00000001000037f0 <_scheduler_yield>:
+1000037f0: ff c3 00 d1 	sub	sp, sp, #48
+1000037f4: fd 7b 02 a9 	stp	x29, x30, [sp, #32]
+1000037f8: fd 83 00 91 	add	x29, sp, #32
+1000037fc: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_yield+0x20>
+100003800: 29 00 00 b0 	adrp	x9, 0x100008000 <_scheduler_yield+0x24>
+100003804: 29 01 00 91 	add	x9, x9, #0
+100003808: a9 83 1f f8 	stur	x9, [x29, #-8]
+10000380c: 08 01 40 f9 	ldr	x8, [x8]
+100003810: 08 01 00 f1 	subs	x8, x8, #0
+100003814: e9 17 9f 1a 	cset	w9, eq
+100003818: e8 03 09 aa 	mov	x8, x9
+10000381c: 08 01 40 f2 	ands	x8, x8, #0x1
+100003820: e8 17 9f 1a 	cset	w8, eq
+100003824: 48 01 00 37 	tbnz	w8, #0, 0x10000384c <_scheduler_yield+0x5c>
+100003828: 01 00 00 14 	b	0x10000382c <_scheduler_yield+0x3c>
+10000382c: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x3c>
+100003830: 00 34 3b 91 	add	x0, x0, #3789
+100003834: 01 00 00 90 	adrp	x1, 0x100003000 <_scheduler_yield+0x44>
+100003838: 21 10 34 91 	add	x1, x1, #3332
+10000383c: e2 1f 80 52 	mov	w2, #255
+100003840: 03 00 00 90 	adrp	x3, 0x100003000 <_scheduler_yield+0x50>
+100003844: 63 60 3a 91 	add	x3, x3, #3736
+100003848: df 00 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+10000384c: 01 00 00 14 	b	0x100003850 <_scheduler_yield+0x60>
+100003850: 09 fe ff 97 	bl	0x100003074 <_get_stack>
+100003854: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003858: 08 6d 40 f9 	ldr	x8, [x8, #216]
+10000385c: 00 6d 00 f9 	str	x0, [x8, #216]
+100003860: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x70>
+100003864: 00 c4 35 91 	add	x0, x0, #3441
+100003868: f2 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000386c: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003870: 09 6d 40 f9 	ldr	x9, [x8, #216]
+100003874: 29 e1 40 b9 	ldr	w9, [x9, #224]
+100003878: ea 03 09 aa 	mov	x10, x9
+10000387c: 08 6d 40 f9 	ldr	x8, [x8, #216]
+100003880: 08 6d 40 f9 	ldr	x8, [x8, #216]
+100003884: e9 03 00 91 	mov	x9, sp
+100003888: 2a 01 00 f9 	str	x10, [x9]
+10000388c: 28 05 00 f9 	str	x8, [x9, #8]
+100003890: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0xa0>
+100003894: 00 74 3b 91 	add	x0, x0, #3805
+100003898: e6 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+10000389c: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0xac>
+1000038a0: 00 38 36 91 	add	x0, x0, #3470
+1000038a4: e3 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000038a8: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000038ac: 0a 6d 40 f9 	ldr	x10, [x8, #216]
+1000038b0: a9 0f 80 52 	mov	w9, #125
+1000038b4: 49 d1 00 b9 	str	w9, [x10, #208]
+1000038b8: 08 6d 40 f9 	ldr	x8, [x8, #216]
+1000038bc: 00 41 00 91 	add	x0, x8, #16
+1000038c0: df 00 00 94 	bl	0x100003c3c <_vsnprintf+0x100003c3c>
+1000038c4: 08 00 00 71 	subs	w8, w0, #0
+1000038c8: e8 07 9f 1a 	cset	w8, ne
+1000038cc: c8 02 00 37 	tbnz	w8, #0, 0x100003924 <_scheduler_yield+0x134>
+1000038d0: 01 00 00 14 	b	0x1000038d4 <_scheduler_yield+0xe4>
+1000038d4: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0xe4>
+1000038d8: 00 c4 35 91 	add	x0, x0, #3441
+1000038dc: d5 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+1000038e0: a8 83 5f f8 	ldur	x8, [x29, #-8]
+1000038e4: 08 6d 40 f9 	ldr	x8, [x8, #216]
+1000038e8: 09 e1 40 b9 	ldr	w9, [x8, #224]
+1000038ec: e8 03 09 aa 	mov	x8, x9
+1000038f0: e9 03 00 91 	mov	x9, sp
+1000038f4: 28 01 00 f9 	str	x8, [x9]
+1000038f8: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x108>
+1000038fc: 00 dc 3b 91 	add	x0, x0, #3831
+100003900: cc 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003904: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x114>
+100003908: 00 38 36 91 	add	x0, x0, #3470
+10000390c: c9 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003910: 28 00 00 b0 	adrp	x8, 0x100008000 <_scheduler_yield+0x134>
+100003914: 08 01 00 91 	add	x8, x8, #0
+100003918: 00 61 00 91 	add	x0, x8, #24
+10000391c: 01 00 80 52 	mov	w1, #0
+100003920: bb 00 00 94 	bl	0x100003c0c <_vsnprintf+0x100003c0c>
+100003924: dd fd ff 97 	bl	0x100003098 <_print_status>
+100003928: a8 83 5f f8 	ldur	x8, [x29, #-8]
+10000392c: 09 6d 40 f9 	ldr	x9, [x8, #216]
+100003930: 88 0f 80 52 	mov	w8, #124
+100003934: 28 d1 00 b9 	str	w8, [x9, #208]
+100003938: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x148>
+10000393c: 00 c4 35 91 	add	x0, x0, #3441
+100003940: bc 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003944: a8 83 5f f8 	ldur	x8, [x29, #-8]
+100003948: 08 6d 40 f9 	ldr	x8, [x8, #216]
+10000394c: 09 e1 40 b9 	ldr	w9, [x8, #224]
+100003950: e8 03 09 aa 	mov	x8, x9
+100003954: e9 03 00 91 	mov	x9, sp
+100003958: 28 01 00 f9 	str	x8, [x9]
+10000395c: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x16c>
+100003960: 00 48 3c 91 	add	x0, x0, #3858
+100003964: b3 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003968: 00 00 00 90 	adrp	x0, 0x100003000 <_scheduler_yield+0x178>
+10000396c: 00 38 36 91 	add	x0, x0, #3470
+100003970: b0 00 00 94 	bl	0x100003c30 <_vsnprintf+0x100003c30>
+100003974: fd 7b 42 a9 	ldp	x29, x30, [sp, #32]
+100003978: ff c3 00 91 	add	sp, sp, #48
+10000397c: c0 03 5f d6 	ret
+
+0000000100003980 <_us_sleep>:
+100003980: ff c3 00 d1 	sub	sp, sp, #48
+100003984: fd 7b 02 a9 	stp	x29, x30, [sp, #32]
+100003988: fd 83 00 91 	add	x29, sp, #32
+10000398c: 68 9b 86 d2 	mov	x8, #13531
+100003990: c8 f6 ba f2 	movk	x8, #55222, lsl #16
+100003994: 48 d0 db f2 	movk	x8, #56962, lsl #32
+100003998: 68 63 e8 f2 	movk	x8, #17179, lsl #48
+10000399c: 08 7c c8 9b 	umulh	x8, x0, x8
+1000039a0: 08 fd 52 d3 	lsr	x8, x8, #18
+1000039a4: 09 48 88 52 	mov	w9, #16960
+1000039a8: e9 01 a0 72 	movk	w9, #15, lsl #16
+1000039ac: 09 81 09 9b 	msub	x9, x8, x9, x0
+1000039b0: 0a 7d 80 52 	mov	w10, #1000
+1000039b4: 29 7d 0a 9b 	mul	x9, x9, x10
+1000039b8: e8 27 01 a9 	stp	x8, x9, [sp, #16]
+1000039bc: e0 43 00 91 	add	x0, sp, #16
+1000039c0: e1 03 00 91 	mov	x1, sp
+1000039c4: 98 00 00 94 	bl	0x100003c24 <_vsnprintf+0x100003c24>
+1000039c8: e0 00 00 34 	cbz	w0, 0x1000039e4 <_us_sleep+0x64>
+1000039cc: e0 03 c0 3d 	ldr	q0, [sp]
+1000039d0: e0 07 80 3d 	str	q0, [sp, #16]
+1000039d4: e0 43 00 91 	add	x0, sp, #16
+1000039d8: e1 03 00 91 	mov	x1, sp
+1000039dc: 92 00 00 94 	bl	0x100003c24 <_vsnprintf+0x100003c24>
+1000039e0: 60 ff ff 35 	cbnz	w0, 0x1000039cc <_us_sleep+0x4c>
+1000039e4: fd 7b 42 a9 	ldp	x29, x30, [sp, #32]
+1000039e8: ff c3 00 91 	add	sp, sp, #48
+1000039ec: c0 03 5f d6 	ret
+
+00000001000039f0 <_file_delete>:
+1000039f0: 80 00 00 b4 	cbz	x0, 0x100003a00 <_file_delete+0x10>
+1000039f4: 08 00 40 39 	ldrb	w8, [x0]
+1000039f8: 48 00 00 34 	cbz	w8, 0x100003a00 <_file_delete+0x10>
+1000039fc: 99 00 00 14 	b	0x100003c60 <_vsnprintf+0x100003c60>
+100003a00: c0 03 5f d6 	ret
+
+0000000100003a04 <_safe_strlen>:
+100003a04: 40 00 00 b4 	cbz	x0, 0x100003a0c <_safe_strlen+0x8>
+100003a08: 90 00 00 14 	b	0x100003c48 <_vsnprintf+0x100003c48>
+100003a0c: c0 03 5f d6 	ret
+
+0000000100003a10 <_safe_sprintf>:
+100003a10: ff c3 00 d1 	sub	sp, sp, #48
+100003a14: f4 4f 01 a9 	stp	x20, x19, [sp, #16]
+100003a18: fd 7b 02 a9 	stp	x29, x30, [sp, #32]
+100003a1c: fd 83 00 91 	add	x29, sp, #32
+100003a20: 3f 00 00 f1 	cmp	x1, #0
+100003a24: 00 18 40 fa 	ccmp	x0, #0, #0, ne
+100003a28: 44 18 40 fa 	ccmp	x2, #0, #4, ne
+100003a2c: 80 01 00 54 	b.eq	0x100003a5c <_safe_sprintf+0x4c>
+100003a30: f3 03 01 aa 	mov	x19, x1
+100003a34: a8 43 00 91 	add	x8, x29, #16
+100003a38: e8 07 00 f9 	str	x8, [sp, #8]
+100003a3c: a3 43 00 91 	add	x3, x29, #16
+100003a40: 8b 00 00 94 	bl	0x100003c6c <_vsnprintf+0x100003c6c>
+100003a44: 1f 00 13 6b 	cmp	w0, w19
+100003a48: ca 00 00 54 	b.ge	0x100003a60 <_safe_sprintf+0x50>
+100003a4c: fd 7b 42 a9 	ldp	x29, x30, [sp, #32]
+100003a50: f4 4f 41 a9 	ldp	x20, x19, [sp, #16]
+100003a54: ff c3 00 91 	add	sp, sp, #48
+100003a58: c0 03 5f d6 	ret
+100003a5c: 12 00 00 94 	bl	0x100003aa4 <_safe_sprintf.cold.1>
+100003a60: 1b 00 00 94 	bl	0x100003acc <_safe_sprintf.cold.2>
+
+0000000100003a64 <_page_size>:
+100003a64: fd 7b bf a9 	stp	x29, x30, [sp, #-16]!
+100003a68: fd 03 00 91 	mov	x29, sp
+100003a6c: a0 03 80 52 	mov	w0, #29
+100003a70: 79 00 00 94 	bl	0x100003c54 <_vsnprintf+0x100003c54>
+100003a74: 1f 00 00 f1 	cmp	x0, #0
+100003a78: 6d 00 00 54 	b.le	0x100003a84 <_page_size+0x20>
+100003a7c: fd 7b c1 a8 	ldp	x29, x30, [sp], #16
+100003a80: c0 03 5f d6 	ret
+100003a84: 31 00 00 94 	bl	0x100003b48 <_page_size.cold.1>
+
+0000000100003a88 <_memory_align>:
+100003a88: 08 08 c1 9a 	udiv	x8, x0, x1
+100003a8c: 08 81 01 9b 	msub	x8, x8, x1, x0
+100003a90: 29 00 08 cb 	sub	x9, x1, x8
+100003a94: 1f 01 00 f1 	cmp	x8, #0
+100003a98: e8 03 89 9a 	csel	x8, xzr, x9, eq
+100003a9c: 00 00 08 8b 	add	x0, x0, x8
+100003aa0: c0 03 5f d6 	ret
+
+0000000100003aa4 <_safe_sprintf.cold.1>:
+100003aa4: fd 7b bf a9 	stp	x29, x30, [sp, #-16]!
+100003aa8: fd 03 00 91 	mov	x29, sp
+100003aac: 00 24 00 30 	adr	x0, #1153
+100003ab0: 1f 20 03 d5 	nop
+100003ab4: 21 24 00 50 	adr	x1, #1158
+100003ab8: 1f 20 03 d5 	nop
+100003abc: 23 24 00 70 	adr	x3, #1159
+100003ac0: 1f 20 03 d5 	nop
+100003ac4: 42 06 80 52 	mov	w2, #50
+100003ac8: 3f 00 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+
+0000000100003acc <_safe_sprintf.cold.2>:
+100003acc: ff 03 01 d1 	sub	sp, sp, #64
+100003ad0: f4 4f 02 a9 	stp	x20, x19, [sp, #32]
+100003ad4: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+100003ad8: fd c3 00 91 	add	x29, sp, #48
+100003adc: 1f 20 03 d5 	nop
+100003ae0: c8 29 00 58 	ldr	x8, 0x100004018 <_vsnprintf+0x100004018>
+100003ae4: 13 01 40 f9 	ldr	x19, [x8]
+100003ae8: 94 23 00 70 	adr	x20, #1139
+100003aec: 1f 20 03 d5 	nop
+100003af0: e0 03 14 aa 	mov	x0, x20
+100003af4: c4 ff ff 97 	bl	0x100003a04 <_safe_strlen>
+100003af8: a8 0d 00 70 	adr	x8, #439
+100003afc: 1f 20 03 d5 	nop
+100003b00: 1f 00 00 f1 	cmp	x0, #0
+100003b04: 09 01 94 9a 	csel	x9, x8, x20, eq
+100003b08: e8 06 80 52 	mov	w8, #55
+100003b0c: 74 21 00 50 	adr	x20, #1070
+100003b10: 1f 20 03 d5 	nop
+100003b14: e8 a7 00 a9 	stp	x8, x9, [sp, #8]
+100003b18: f4 03 00 f9 	str	x20, [sp]
+100003b1c: c1 0b 00 50 	adr	x1, #378
+100003b20: 1f 20 03 d5 	nop
+100003b24: e0 03 13 aa 	mov	x0, x19
+100003b28: 33 00 00 94 	bl	0x100003bf4 <_vsnprintf+0x100003bf4>
+100003b2c: 00 20 00 30 	adr	x0, #1025
+100003b30: 1f 20 03 d5 	nop
+100003b34: 83 21 00 10 	adr	x3, #1072
+100003b38: 1f 20 03 d5 	nop
+100003b3c: e1 03 14 aa 	mov	x1, x20
+100003b40: e2 06 80 52 	mov	w2, #55
+100003b44: 20 00 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+
+0000000100003b48 <_page_size.cold.1>:
+100003b48: ff 03 01 d1 	sub	sp, sp, #64
+100003b4c: f4 4f 02 a9 	stp	x20, x19, [sp, #32]
+100003b50: fd 7b 03 a9 	stp	x29, x30, [sp, #48]
+100003b54: fd c3 00 91 	add	x29, sp, #48
+100003b58: 1f 20 03 d5 	nop
+100003b5c: e8 25 00 58 	ldr	x8, 0x100004018 <_vsnprintf+0x100004018>
+100003b60: 13 01 40 f9 	ldr	x19, [x8]
+100003b64: 14 20 00 50 	adr	x20, #1026
+100003b68: 1f 20 03 d5 	nop
+100003b6c: e0 03 14 aa 	mov	x0, x20
+100003b70: a5 ff ff 97 	bl	0x100003a04 <_safe_strlen>
+100003b74: c8 09 00 70 	adr	x8, #315
+100003b78: 1f 20 03 d5 	nop
+100003b7c: 1f 00 00 f1 	cmp	x0, #0
+100003b80: 09 01 94 9a 	csel	x9, x8, x20, eq
+100003b84: 08 09 80 52 	mov	w8, #72
+100003b88: 94 1d 00 50 	adr	x20, #946
+100003b8c: 1f 20 03 d5 	nop
+100003b90: e8 a7 00 a9 	stp	x8, x9, [sp, #8]
+100003b94: f4 03 00 f9 	str	x20, [sp]
+100003b98: e1 07 00 50 	adr	x1, #254
+100003b9c: 1f 20 03 d5 	nop
+100003ba0: e0 03 13 aa 	mov	x0, x19
+100003ba4: 14 00 00 94 	bl	0x100003bf4 <_vsnprintf+0x100003bf4>
+100003ba8: 40 1e 00 10 	adr	x0, #968
+100003bac: 1f 20 03 d5 	nop
+100003bb0: a3 1d 00 10 	adr	x3, #948
+100003bb4: 1f 20 03 d5 	nop
+100003bb8: e1 03 14 aa 	mov	x1, x20
+100003bbc: 02 09 80 52 	mov	w2, #72
+100003bc0: 01 00 00 94 	bl	0x100003bc4 <_vsnprintf+0x100003bc4>
+
+Disassembly of section __TEXT,__stubs:
+
+0000000100003bc4 <__stubs>:
+100003bc4: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x4>
+100003bc8: 10 02 40 f9 	ldr	x16, [x16]
+100003bcc: 00 02 1f d6 	br	x16
+100003bd0: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x10>
+100003bd4: 10 06 40 f9 	ldr	x16, [x16, #8]
+100003bd8: 00 02 1f d6 	br	x16
+100003bdc: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x1c>
+100003be0: 10 12 40 f9 	ldr	x16, [x16, #32]
+100003be4: 00 02 1f d6 	br	x16
+100003be8: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x28>
+100003bec: 10 16 40 f9 	ldr	x16, [x16, #40]
+100003bf0: 00 02 1f d6 	br	x16
+100003bf4: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x34>
+100003bf8: 10 1a 40 f9 	ldr	x16, [x16, #48]
+100003bfc: 00 02 1f d6 	br	x16
+100003c00: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x40>
+100003c04: 10 1e 40 f9 	ldr	x16, [x16, #56]
+100003c08: 00 02 1f d6 	br	x16
+100003c0c: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x4c>
+100003c10: 10 22 40 f9 	ldr	x16, [x16, #64]
+100003c14: 00 02 1f d6 	br	x16
+100003c18: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x58>
+100003c1c: 10 26 40 f9 	ldr	x16, [x16, #72]
+100003c20: 00 02 1f d6 	br	x16
+100003c24: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x64>
+100003c28: 10 2a 40 f9 	ldr	x16, [x16, #80]
+100003c2c: 00 02 1f d6 	br	x16
+100003c30: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x70>
+100003c34: 10 2e 40 f9 	ldr	x16, [x16, #88]
+100003c38: 00 02 1f d6 	br	x16
+100003c3c: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x7c>
+100003c40: 10 32 40 f9 	ldr	x16, [x16, #96]
+100003c44: 00 02 1f d6 	br	x16
+100003c48: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x88>
+100003c4c: 10 36 40 f9 	ldr	x16, [x16, #104]
+100003c50: 00 02 1f d6 	br	x16
+100003c54: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0x94>
+100003c58: 10 3a 40 f9 	ldr	x16, [x16, #112]
+100003c5c: 00 02 1f d6 	br	x16
+100003c60: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0xa0>
+100003c64: 10 3e 40 f9 	ldr	x16, [x16, #120]
+100003c68: 00 02 1f d6 	br	x16
+100003c6c: 10 00 00 b0 	adrp	x16, 0x100004000 <__stubs+0xac>
+100003c70: 10 42 40 f9 	ldr	x16, [x16, #128]
+100003c74: 00 02 1f d6 	br	x16
