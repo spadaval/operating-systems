@@ -342,7 +342,7 @@ kvdb_lookup(struct kvdb *kvdb,
 	val_ = val_len ? val : NULL;
 	val_len_ = val_len ? (*val_len) : 0;
 	if (chain_lookup(kvdb, key, key_len, val_, &val_len_, &off)) {
-		TRACE(0);
+		TRACE("Chain lookup");
 		return -1;
 	}
 	if (!off || !val_len_) {
