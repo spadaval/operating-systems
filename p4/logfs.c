@@ -37,6 +37,26 @@
 #define u8 uint_fast8_t
 #define u64 uint64_t
 
+//////////////
+// FetchPlan
+/////////////
+
+typedef struct Region {
+    u64 address;
+    u64 size;
+} Region;
+
+static inline Region new_region(u64 address, u64 size) {
+    Region r;
+    r.address = address;
+    r.size = size;
+    return r;
+}
+
+static inline u64 region_end(Region r) {
+    return r.address + r.size;
+}
+
 ///////////////
 // WriteBuffer
 //////////////
@@ -133,37 +153,101 @@ static inline u64 wb_freespace(WriteBuffer *buf) {
 }
 
 /**
- * Read a specific block of data from the write buffer.
- * Returns True if the block was read successfully, False otherwise.
+ * Find the position of a particular address in the write buffer.
+ *
+ * Assumes that the caller holds the access_mutex.
  */
-// TODO fix
-bool wb_read(WriteBuffer *wb, int address, u8 *buffer, int size) {
-    pthread_mutex_lock(&wb->access_mutex);
+static inline u64 wb_locate(WriteBuffer *wb, u64 address) {
+    u64 wb_start = wb->current_block * wb->block_size;
+    u64 wb_offset = address - wb_start;
+    u64 location = (wb->write_head + wb_offset) % wb->buf_size;
+    assert(location >= 0 && location < wb->buf_size);
+    return location;
+}
+
+typedef enum Strategy {
+    WRITE_BUFFER = 42,
+    CACHE,
+    BOTH
+} Strategy;
+
+typedef struct FetchPlan {
+    Region disk_region;
+    Region wb_region;
+    Strategy strategy;
+} FetchPlan;
+
+/**
+ * Splits a region into two FetchPlan, one to be served by the cache
+ * and one contained within the write buffer
+ *
+ * We're doing it this way to avoid having to copy too much data.
+ * RegionPair is pure metadata, so stack allocation is probably faster.
+ *
+ * Note: a region will have size 0 if it not part of the plan
+ *
+ * This function expects the caller to hold the access_mutex.
+ */
+FetchPlan wb_analyze(WriteBuffer *wb, Region region) {
+    FetchPlan plan;
+    plan.disk_region.size = 0;
+    plan.wb_region.size = 0;
+
+    // the region currently contained in the write buffer
     int wb_start = wb->current_block * wb->block_size;
     int wb_end = wb_start + wb_usedspace(wb);
 
-    if (address < wb_start || address > wb_end) {
-        // printf("Not in wb\n");
-        pthread_mutex_unlock(&wb->access_mutex);
+    if (region_end(region) < wb_start || region.address > wb_end) {
+        // the requested region is completely in cache
+        plan.disk_region = region;
+        plan.strategy = CACHE;
+        return plan;
+    } else if (region.address >= wb_start && region_end(region) <= wb_end) {
+        // the requested region is completely in write-buffer
+        plan.wb_region = region;
+        plan.strategy = WRITE_BUFFER;
+        return plan;
+    } else {
+        // the data is split across the write buffer and cache.
+        // In this case, the write buffer gets priority.
+        // We assume that the required data is at the start of the write buffer.
+        // This makes sense for a split read.
+
+        plan.wb_region = new_region(wb_start, region_end(region) - wb_start);
+
+        plan.disk_region = region;
+        plan.disk_region.size = region.size - plan.wb_region.size;
+        plan.strategy = BOTH;
+    }
+    assert(plan.disk_region.size + plan.wb_region.size == region.size);
+    return plan;
+}
+
+/**
+ * Read a specific block of data from the write buffer.
+ * Returns True if the block was read successfully, False otherwise.
+ *
+ * Expects caller to hold the access_mutex.
+ */
+bool wb_read(WriteBuffer *wb, u8 *buffer, Region region) {
+    int wb_start = wb->current_block * wb->block_size;
+    int wb_end = wb_start + wb_usedspace(wb);
+
+    if (region.address < wb_start || region.address > wb_end) {
         return false;
     }
-
-    // printf("Reading %d...%d[%d bytes] (wb=%d) from write buffer\n", address, address + size, size, wb->buf_size);
-    int wb_offset = address - wb_start;
-    int location = (wb->write_head + wb_offset) % wb->buf_size;
-    assert(location >= 0 && location < wb->buf_size);
-    if (location + size > wb->buf_size) {
+    u64 location = wb_locate(wb, region.address);
+    if (location + region.size > wb->buf_size) {
         // wraparound read necessary
         int first_part_len = wb->buf_size - location;
-        printf("wb[%d..%d]+wb[%d..%d]\n", location, location + first_part_len, 0, size - first_part_len);
+        log("[wb] [%ld..%ld](%ld) + [wb][%ld..%ld](%ld)\n", location, location + first_part_len, first_part_len, 0l, region.size - first_part_len, region.size - first_part_len);
         memcpy(buffer, wb->buf + location, first_part_len);
-        memcpy(buffer + first_part_len, wb->buf, size - first_part_len);
+        memcpy(buffer + first_part_len, wb->buf, region.size - first_part_len);
     } else {
-        printf("wb[%d..%d]\n", location, location + size);
-        memcpy(buffer, wb->buf + location, size);
+        log("[wb] [%ld..%ld](%ld)\n", location, location + region.size, region.size);
+        memcpy(buffer, wb->buf + location, region.size);
     }
 
-    pthread_mutex_unlock(&wb->access_mutex);
     return true;
 }
 
@@ -186,17 +270,20 @@ void wb_append(WriteBuffer *wb, const u8 *data, u64 size) {
     }
 
     pthread_mutex_lock(&wb->access_mutex);
-    memcpy(wb->buf + wb->append_head, data, size);
-    wb->append_head = (wb->append_head + size) % wb->buf_size;
 
-    // printf("%ld bytes in wb (append=%d, write=%d)...", wb_usedspace(buf), buf->append_head, buf->write_head);
+    if (wb->append_head + size > wb->buf_size) {
+        u64 first_part_size = wb->buf_size - wb->append_head;
+        memcpy(wb->buf + wb->append_head, data, first_part_size);
+        memcpy(wb->buf, data + first_part_size, size - first_part_size);
+    } else {
+        memcpy(wb->buf + wb->append_head, data, size);
+    }
+    wb->append_head = (wb->append_head + size) % wb->buf_size;
 
     if (wb_usedspace(wb) >= (u64)wb->block_size) {
         pthread_cond_signal(&wb->write_waiting_for_data_to_flush);
-    } else {
     }
     pthread_mutex_unlock(&wb->access_mutex);
-    // printf("done.\n");
 }
 
 void wb_flush(WriteBuffer *wb, bool flush_partial) {
@@ -209,18 +296,16 @@ void wb_flush(WriteBuffer *wb, bool flush_partial) {
     while (wb_usedspace(wb) >= (u64)wb->block_size) {
         if ((wb->write_head + wb->block_size) >= wb->buf_size) {
             // the page we want to write is wrapped around the circular buffer.
-            // We need to recombine them.
+            // The device needs a continuous region of memory, so we need to recombine them.
             u8 *virtual_page = malloc(wb->block_size);
             memset(virtual_page, 0, wb->block_size);
             int end_fragment_size = wb->buf_size - wb->write_head;
             memcpy(virtual_page, wb->buf + wb->write_head, end_fragment_size);
             memcpy(virtual_page + end_fragment_size, wb->buf, wb->block_size - end_fragment_size);
             device_write(wb->device, virtual_page, wb->current_block * wb->block_size, wb->block_size);
-            // printf("Wrote wraparound block at %d\n", wb->current_block * wb->block_size);
             blocks_written++;
         } else {
             device_write(wb->device, wb->buf + wb->write_head, wb->current_block * wb->block_size, wb->block_size);
-            // printf("Wrote block to %d\n", wb->current_block * wb->block_size);
             blocks_written++;
         }
         wb->current_block++;
@@ -231,13 +316,11 @@ void wb_flush(WriteBuffer *wb, bool flush_partial) {
         memset(virtual_page, 0, wb->block_size);
         memcpy(virtual_page, wb->buf + wb->write_head, wb->append_head - wb->write_head);
         device_write(wb->device, virtual_page, wb->current_block * wb->block_size, wb->block_size);
-        // printf("Wrote partial block at %d\n", wb->current_block * wb->block_size);
     }
 
     wb->is_full = false;
     pthread_mutex_unlock(&wb->access_mutex);
     pthread_cond_signal(&wb->append_waiting_for_space);
-    // printf("wrote %d of %d blocks.\n", blocks_written, target_blocks);
 }
 
 void wb_shutdown(WriteBuffer *buf) {
@@ -254,11 +337,9 @@ static void *worker_loop(WriteBuffer *buf) {
             return NULL;
         }
 
-        // printf("Beginning flush...\n");
         wb_flush(buf, false);
 
         pthread_mutex_lock(&buf->write_cond_mutex);
-        // printf("Worker waiting for data to flush...\n");
         pthread_cond_wait(&buf->write_waiting_for_data_to_flush, &buf->write_cond_mutex);
         pthread_mutex_unlock(&buf->write_cond_mutex);
     }
@@ -346,27 +427,25 @@ static u8 *rc_getpage(ReadCache *rc, int page_no) {
  *
  * Threadsafe & reentrant.
  */
-void rc_read(ReadCache *rc, int address, u8 *buf, u64 size) {
+void rc_read(ReadCache *rc, u8 *buf, Region region) {
     pthread_mutex_lock(&rc->access_mutex);
-    printf("---[RC]--- data[%d..%d] = \n", address, address + size);
-    int current_page = address / rc->block_size;
-    int page_offset = address % rc->block_size;
+    int current_page = region.address / rc->block_size;
+    int page_offset = region.address % rc->block_size;
 
     u64 copied_bytes = 0;
-    while (copied_bytes < size) {
+    while (copied_bytes < region.size) {
         u8 *page_data = rc_getpage(rc, current_page);
         u8 *data_to_copy = page_data + page_offset;
-        int length_to_copy = MIN(size - copied_bytes, rc->block_size - page_offset);
+        int length_to_copy = MIN(region.size - copied_bytes, rc->block_size - page_offset);
 
-        printf(" + %d[%d..%d](%s) \n", current_page, page_offset, page_offset + length_to_copy, dump_bytes(data_to_copy, length_to_copy));
+        log("[rc] %d[%d..%d]<%d>\n", current_page, page_offset, page_offset + length_to_copy, length_to_copy);
         memcpy(buf + copied_bytes, data_to_copy, length_to_copy);
 
         page_offset = 0;
         copied_bytes += length_to_copy;
         current_page++;
     }
-    printf("---END----\n");
-    assert(copied_bytes == size);
+    assert(copied_bytes == region.size);
     pthread_mutex_unlock(&rc->access_mutex);
 }
 
@@ -380,10 +459,30 @@ typedef struct logfs {
 } LogFS;
 
 int logfs_read(struct logfs *logfs, void *buf, uint64_t off, size_t len) {
-    bool was_in_wb = wb_read(logfs->wb, off, (u8 *)buf, len);
-    if (!was_in_wb) {
-        rc_read(logfs->cache, off, (u8 *)buf, len);
+    Region region = new_region(off, len);
+
+    pthread_mutex_lock(&logfs->wb->access_mutex);
+    FetchPlan plan = wb_analyze(logfs->wb, region);
+
+    if (plan.strategy == CACHE) {
+        // we no longer need this lock
+        pthread_mutex_unlock(&logfs->wb->access_mutex);
     }
+
+#ifdef DEBUG
+    if (plan.strategy == BOTH) {
+        log("=============Using split read\n");
+    }
+#endif
+
+    if (plan.strategy == CACHE || plan.strategy == BOTH) {
+        rc_read(logfs->cache, (u8 *)buf, plan.disk_region);
+    }
+    if (plan.strategy == WRITE_BUFFER || plan.strategy == BOTH) {
+        wb_read(logfs->wb, (u8 *)buf + plan.disk_region.size, plan.wb_region);
+        pthread_mutex_unlock(&logfs->wb->access_mutex);
+    }
+
     return 0;
 }
 
