@@ -8,7 +8,7 @@
 #
 
 CC     = gcc
-CFLAGS =  -fpic -g
+CFLAGS =  -fpic -g -O3
 LDLIBS = -lpthread
 DEST   = cs238
 SRCS  := $(wildcard *.c)

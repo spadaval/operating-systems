@@ -286,7 +286,12 @@ void wb_append(WriteBuffer *wb, const u8 *data, u64 size) {
     pthread_mutex_unlock(&wb->access_mutex);
 }
 
+static u8 *virtual_page = NULL;
+
 void wb_flush(WriteBuffer *wb, bool flush_partial) {
+    if (virtual_page == NULL) {
+        virtual_page = malloc(wb->block_size);
+    }
     pthread_mutex_lock(&wb->access_mutex);
 
     int blocks_written = 0;
@@ -297,7 +302,6 @@ void wb_flush(WriteBuffer *wb, bool flush_partial) {
         if ((wb->write_head + wb->block_size) >= wb->buf_size) {
             // the page we want to write is wrapped around the circular buffer.
             // The device needs a continuous region of memory, so we need to recombine them.
-            u8 *virtual_page = malloc(wb->block_size);
             memset(virtual_page, 0, wb->block_size);
             int end_fragment_size = wb->buf_size - wb->write_head;
             memcpy(virtual_page, wb->buf + wb->write_head, end_fragment_size);
@@ -312,7 +316,6 @@ void wb_flush(WriteBuffer *wb, bool flush_partial) {
         wb->write_head = (wb->write_head + wb->block_size) % wb->buf_size;
     }
     if (flush_partial && wb->write_head < wb->append_head) {
-        u8 *virtual_page = malloc(wb->block_size);
         memset(virtual_page, 0, wb->block_size);
         memcpy(virtual_page, wb->buf + wb->write_head, wb->append_head - wb->write_head);
         device_write(wb->device, virtual_page, wb->current_block * wb->block_size, wb->block_size);
@@ -502,4 +505,15 @@ struct logfs *logfs_open(const char *pathname) {
 
 void logfs_close(struct logfs *logfs) {
     wb_shutdown(logfs->wb);
+    // free write buffer
+    free(logfs->wb->device);
+    free(logfs->wb->buf);
+    free(logfs->wb);
+    // free read cache
+    free(logfs->cache->read_cache);
+    free(logfs->cache);
+
+    free(logfs);
+
+    free(virtual_page);
 }
