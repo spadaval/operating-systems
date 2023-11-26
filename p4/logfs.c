@@ -155,11 +155,11 @@ bool wb_read(WriteBuffer *wb, int address, u8 *buffer, int size) {
     if (location + size > wb->buf_size) {
         // wraparound read necessary
         int first_part_len = wb->buf_size - location;
+        printf("wb[%d..%d]+wb[%d..%d]\n", location, location + first_part_len, 0, size - first_part_len);
         memcpy(buffer, wb->buf + location, first_part_len);
         memcpy(buffer + first_part_len, wb->buf, size - first_part_len);
-        // printf("Serve from wb[%d..%d]+wb[%d..%d]\n", location, location + first_part_len, 0, size - first_part_len);
     } else {
-        // printf("Serve from wb[%d..%d]\n", location, location + size);
+        printf("wb[%d..%d]\n", location, location + size);
         memcpy(buffer, wb->buf + location, size);
     }
 
@@ -357,7 +357,7 @@ void rc_read(ReadCache *rc, int address, u8 *buf, u64 size) {
     // device_read(rc->block, temp_buf, address - (address % rc->block_size), rc->block_size);
     // memcpy(buf, temp_buf + address % rc->block_size, size);
 
-    printf("[RC]data[%d..%d] = ", address, address + size);
+    printf("[RC]data[%d..%d] = \n", address, address + size);
     int current_page = address / rc->block_size;
     int page_offset = address % rc->block_size;
 
@@ -367,14 +367,14 @@ void rc_read(ReadCache *rc, int address, u8 *buf, u64 size) {
         u8 *data_to_copy = page_data + page_offset;
         int length_to_copy = MIN(size - copied_bytes, rc->block_size - page_offset);
 
-        printf(" %d[%d..%d](%s) + ", current_page, page_offset, page_offset + length_to_copy, dump_bytes(data_to_copy, length_to_copy));
+        printf(" + %d[%d..%d](%s) \n", current_page, page_offset, page_offset + length_to_copy, dump_bytes(data_to_copy, length_to_copy));
         memcpy(buf + copied_bytes, data_to_copy, length_to_copy);
 
         page_offset = 0;
         copied_bytes += length_to_copy;
         current_page++;
     }
-    printf("END\n");
+    printf("---END----\n");
     assert(copied_bytes == size);
     pthread_mutex_unlock(&rc->access_mutex);
 }

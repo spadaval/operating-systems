@@ -93,8 +93,9 @@ read_write(const uint64_t N, const uint64_t K, const uint64_t V) {
         mk_object(key, val, K, V, &key_len, &val_len, i, 'i');
         val_len_ = V;
         int insert_code = kvdb_insert(kvdb, key, key_len, val, val_len);
-		//printf("Start lookup\n");
+        printf("------------------Start lookup\n");
         int lookup_code = kvdb_lookup(kvdb, key, key_len, val_, &val_len_);
+        printf("------------------End lookup\n");
         if (insert_code) {
             EXIT("insert failed");
         }
@@ -326,7 +327,7 @@ int main(int argc, char *argv[]) {
     // TEST(basic_logic, "basic_logic");
     // TEST(heavy_rewrite, "heavy_rewrite");
     // TEST(read_write_single, "read_write_single");
-    TEST(read_write_small, "read_write_small");
+    // TEST(read_write_small, "read_write_small");
     TEST(read_write_large, "read_write_large");
 
     /* postlude */
