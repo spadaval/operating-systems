@@ -286,12 +286,18 @@ void wb_append(WriteBuffer *wb, const u8 *data, u64 size) {
     pthread_mutex_unlock(&wb->access_mutex);
 }
 
+/**
+ * This buffer belongs to wb_flush.
+ * It _should_ just be a static stack variable, but then we wouldn't be able to free it.
+ */
 static u8 *virtual_page = NULL;
 
 void wb_flush(WriteBuffer *wb, bool flush_partial) {
     if (virtual_page == NULL) {
         virtual_page = malloc(wb->block_size);
     }
+    memset(virtual_page, 0, wb->block_size);
+
     pthread_mutex_lock(&wb->access_mutex);
 
     int blocks_written = 0;
@@ -302,7 +308,6 @@ void wb_flush(WriteBuffer *wb, bool flush_partial) {
         if ((wb->write_head + wb->block_size) >= wb->buf_size) {
             // the page we want to write is wrapped around the circular buffer.
             // The device needs a continuous region of memory, so we need to recombine them.
-            memset(virtual_page, 0, wb->block_size);
             int end_fragment_size = wb->buf_size - wb->write_head;
             memcpy(virtual_page, wb->buf + wb->write_head, end_fragment_size);
             memcpy(virtual_page + end_fragment_size, wb->buf, wb->block_size - end_fragment_size);
@@ -316,7 +321,6 @@ void wb_flush(WriteBuffer *wb, bool flush_partial) {
         wb->write_head = (wb->write_head + wb->block_size) % wb->buf_size;
     }
     if (flush_partial && wb->write_head < wb->append_head) {
-        memset(virtual_page, 0, wb->block_size);
         memcpy(virtual_page, wb->buf + wb->write_head, wb->append_head - wb->write_head);
         device_write(wb->device, virtual_page, wb->current_block * wb->block_size, wb->block_size);
     }
@@ -515,5 +519,5 @@ void logfs_close(struct logfs *logfs) {
 
     free(logfs);
 
-    free(virtual_page);
+    FREE(virtual_page);
 }
