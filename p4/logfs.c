@@ -200,11 +200,7 @@ void wb_append(WriteBuffer *wb, const u8 *data, u64 size) {
 }
 
 void wb_flush(WriteBuffer *wb, bool flush_partial) {
-    // printf("Flushing...");
-    // fflush(stdout);
     pthread_mutex_lock(&wb->access_mutex);
-    // printf("got access lock...");
-    // fflush(stdout);
 
     int blocks_written = 0;
     int target_blocks = wb_usedspace(wb) / wb->block_size;
@@ -351,13 +347,8 @@ static u8 *rc_getpage(ReadCache *rc, int page_no) {
  * Threadsafe & reentrant.
  */
 void rc_read(ReadCache *rc, int address, u8 *buf, u64 size) {
-    // UNUSED(rc_getpage);
-    // pthread_mutex_lock(&rc->access_mutex);
-    // u8 *temp_buf = calloc(1, rc->block_size);
-    // device_read(rc->block, temp_buf, address - (address % rc->block_size), rc->block_size);
-    // memcpy(buf, temp_buf + address % rc->block_size, size);
-
-    printf("[RC]data[%d..%d] = \n", address, address + size);
+    pthread_mutex_lock(&rc->access_mutex);
+    printf("---[RC]--- data[%d..%d] = \n", address, address + size);
     int current_page = address / rc->block_size;
     int page_offset = address % rc->block_size;
 
