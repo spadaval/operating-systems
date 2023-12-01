@@ -67,6 +67,7 @@ typedef struct WriteBuffer {
     // current page/block number in device
     int current_block;
 
+    u8* unaligned;
     // the main buffer
     u8 *buf;
     int buf_size;
@@ -102,7 +103,11 @@ WriteBuffer *wb_init(struct device *block) {
     wb->block_size = device_block(block);
 
     int buf_size = device_block(block) * WCACHE_BLOCKS;
-    wb->buf = calloc(device_block(block), WCACHE_BLOCKS);
+    wb->unaligned = malloc(device_block(block)* WCACHE_BLOCKS + page_size());
+
+    wb->buf = memory_align(wb->unaligned, page_size());
+
+
     wb->buf_size = buf_size;
 
     wb->append_head = 0;
@@ -290,13 +295,16 @@ void wb_append(WriteBuffer *wb, const u8 *data, u64 size) {
  * This buffer belongs to wb_flush.
  * It _should_ just be a static stack variable, but then we wouldn't be able to free it.
  */
+static u8 *virtual_page_unaligned = NULL;
 static u8 *virtual_page = NULL;
 
 void wb_flush(WriteBuffer *wb, bool flush_partial) {
     if (virtual_page == NULL) {
-        virtual_page = malloc(wb->block_size);
+        virtual_page_unaligned = malloc(wb->block_size + page_size());
+        virtual_page = memory_align(virtual_page_unaligned, page_size());
     }
-    memset(virtual_page, 0, wb->block_size);
+    // valgrind hates this
+    //memset(virtual_page, 0, wb->block_size);
 
     pthread_mutex_lock(&wb->access_mutex);
 
@@ -359,6 +367,7 @@ static void *worker_loop(WriteBuffer *buf) {
 typedef struct ReadCache {
     struct device *block;
     int block_size;
+    u8* unaligned;
     u8 *read_cache;
     // the pages contained in the read_cache.
     // -1 means the page is not free.
@@ -373,7 +382,11 @@ static ReadCache *rc_init(struct device *block) {
     ReadCache *rc = malloc(sizeof(ReadCache));
     rc->block = block;
     rc->block_size = device_block(block);
-    rc->read_cache = malloc(device_block(block) * RCACHE_BLOCKS);
+    rc->unaligned = malloc(device_block(block) * RCACHE_BLOCKS + page_size());
+    
+    rc->read_cache = memory_align(rc->unaligned, page_size());
+
+    
     memset(rc->pages, -1, RCACHE_BLOCKS * sizeof(int));
     rc->eviction_index = 0;
     pthread_mutex_init(&rc->access_mutex, NULL);
@@ -511,13 +524,13 @@ void logfs_close(struct logfs *logfs) {
     wb_shutdown(logfs->wb);
     // free write buffer
     free(logfs->wb->device);
-    free(logfs->wb->buf);
+    free(logfs->wb->unaligned);
     free(logfs->wb);
     // free read cache
-    free(logfs->cache->read_cache);
+    free(logfs->cache->unaligned);
     free(logfs->cache);
 
     free(logfs);
 
-    FREE(virtual_page);
+    //FREE(virtual_page_unaligned);
 }
