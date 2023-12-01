@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 #include "device.h"
@@ -34,11 +35,8 @@
  *   pthread_cond_signal()
  */
 
-#define u8 uint_fast8_t
-#define u64 uint64_t
-
 //////////////
-// FetchPlan
+// Region
 /////////////
 
 typedef struct Region {
@@ -46,7 +44,7 @@ typedef struct Region {
     u64 size;
 } Region;
 
-static inline Region new_region(u64 address, u64 size) {
+static inline Region new_region(usize address, u64 size) {
     Region r;
     r.address = address;
     r.size = size;
@@ -55,6 +53,63 @@ static inline Region new_region(u64 address, u64 size) {
 
 static inline u64 region_end(Region r) {
     return r.address + r.size;
+}
+
+/////////////
+// Metadata
+////////////
+
+#define RESERVED_BLOCKS 1
+
+typedef struct Metadata {
+    char tag[6];
+    // write cursor
+    u64 current_block;
+    u64 current_offset;
+    // where the persisted index is stored
+    Region index;
+} Metadata;
+
+void meta_init(Metadata *metadata) {
+    // the first block is reserved for metadata.
+    // LOGFS always starts at block 1.
+    metadata->current_block = RESERVED_BLOCKS;
+    metadata->current_offset = 0;
+    metadata->index.address = 0;
+    metadata->index.size = 0;
+    strcpy(metadata->tag, "LOGFS");
+}
+
+void meta_save(Metadata *metadata, struct device *block) {
+    int blk_size = device_block(block);
+    static u8 *page;
+    if (page == NULL) {
+        page = malloc(blk_size);
+    }
+    memset(page, 0, blk_size);
+    memcpy(page, metadata, sizeof(Metadata));
+    device_write(block, page, blk_size, blk_size);
+}
+
+Metadata meta_load(struct device *block) {
+    int blk_size = device_block(block);
+    static u8 *page;
+    if (page == NULL) {
+        page = malloc(blk_size);
+    }
+    memset(page, 0, blk_size);
+    device_read(block, page, blk_size, blk_size);
+    Metadata metadata;
+    memcpy(&metadata, page, sizeof(Metadata));
+
+    if (strcmp(metadata.tag, "LOGFS") != 0) {
+        printf("Corrupt metadata or block device is not initialized with LogFS\n");
+        meta_init(&metadata);
+    }
+    // meta_init(&metadata);
+    printf("Loaded metadata: cursor=(%d,%d), index=(%d,%d)\n", metadata.current_block, metadata.current_offset, metadata.index.address, metadata.index.size);
+
+    return metadata;
 }
 
 ///////////////
@@ -95,18 +150,14 @@ typedef struct WriteBuffer {
 
 static void *worker_loop(WriteBuffer *buf);
 
-WriteBuffer *wb_init(struct device *block) {
+WriteBuffer *wb_init(struct device *block, Metadata meta) {
+    // TODO add metadata loading
     WriteBuffer *wb = malloc(sizeof(WriteBuffer));
     wb->device = block;
-    wb->current_block = 0;
     wb->block_size = device_block(block);
 
-    int buf_size = device_block(block) * WCACHE_BLOCKS;
     wb->buf = calloc(device_block(block), WCACHE_BLOCKS);
-    wb->buf_size = buf_size;
-
-    wb->append_head = 0;
-    wb->write_head = 0;
+    wb->buf_size = device_block(block) * WCACHE_BLOCKS;
 
     wb->shutdown = false;
     wb->is_full = false;
@@ -118,6 +169,18 @@ WriteBuffer *wb_init(struct device *block) {
 
     pthread_mutex_init(&wb->write_cond_mutex, NULL);
     pthread_cond_init(&wb->write_waiting_for_data_to_flush, NULL);
+
+    wb->current_block = meta.current_block;
+    // If the write cursor was in the middle of a block, we can simulate
+    // that by loading the incomplete block into the write buffer.
+    if (meta.current_offset > 0) {
+        device_read(block, wb->buf, wb->current_block * wb->block_size, wb->block_size);
+        wb->append_head = meta.current_offset;
+    } else {
+        wb->append_head = 0;
+    }
+    wb->write_head = 0;
+
     pthread_create(&wb->write_thread, NULL, (void *(*)(void *))worker_loop, wb);
 
     return wb;
@@ -153,7 +216,8 @@ static inline u64 wb_freespace(WriteBuffer *buf) {
 }
 
 /**
- * Find the position of a particular address in the write buffer.
+ * Returns the offset within the write buffer for a certain address.
+ * i.e. data for location will be present in wb->write_buffer[wb_locate(wb, location)]
  *
  * Assumes that the caller holds the access_mutex.
  */
@@ -194,8 +258,8 @@ FetchPlan wb_analyze(WriteBuffer *wb, Region region) {
     plan.wb_region.size = 0;
 
     // the region currently contained in the write buffer
-    int wb_start = wb->current_block * wb->block_size;
-    int wb_end = wb_start + wb_usedspace(wb);
+    usize wb_start = wb->current_block * wb->block_size;
+    usize wb_end = wb_start + wb_usedspace(wb);
 
     if (region_end(region) < wb_start || region.address > wb_end) {
         // the requested region is completely in cache
@@ -230,8 +294,8 @@ FetchPlan wb_analyze(WriteBuffer *wb, Region region) {
  * Expects caller to hold the access_mutex.
  */
 bool wb_read(WriteBuffer *wb, u8 *buffer, Region region) {
-    int wb_start = wb->current_block * wb->block_size;
-    int wb_end = wb_start + wb_usedspace(wb);
+    usize wb_start = wb->current_block * wb->block_size;
+    usize wb_end = wb_start + wb_usedspace(wb);
 
     if (region.address < wb_start || region.address > wb_end) {
         return false;
@@ -346,8 +410,15 @@ static void *worker_loop(WriteBuffer *buf) {
 
         wb_flush(buf, false);
 
+        struct timespec timeToWait;
+        struct timeval now;
+        int rt;
+        gettimeofday(&now, NULL);
+        timeToWait.tv_sec = now.tv_sec + 1;
+        timeToWait.tv_nsec = (now.tv_usec) * 1000UL;
+
         pthread_mutex_lock(&buf->write_cond_mutex);
-        pthread_cond_wait(&buf->write_waiting_for_data_to_flush, &buf->write_cond_mutex);
+        pthread_cond_timedwait(&buf->write_waiting_for_data_to_flush, &buf->write_cond_mutex, &timeToWait);
         pthread_mutex_unlock(&buf->write_cond_mutex);
     }
 }
@@ -463,10 +534,12 @@ void rc_read(ReadCache *rc, u8 *buf, Region region) {
 typedef struct logfs {
     WriteBuffer *wb;
     ReadCache *cache;
+    Metadata meta;
 } LogFS;
 
 int logfs_read(struct logfs *logfs, void *buf, uint64_t off, size_t len) {
-    Region region = new_region(off, len);
+    // offset to account for the "hidden" first page
+    Region region = new_region(off + logfs->wb->block_size, len);
 
     pthread_mutex_lock(&logfs->wb->access_mutex);
     FetchPlan plan = wb_analyze(logfs->wb, region);
@@ -499,16 +572,26 @@ int logfs_append(struct logfs *logfs, const void *buf, uint64_t len) {
     return 0;
 }
 
-struct logfs *logfs_open(const char *pathname) {
+struct logfs *logfs_open(const char *pathname, bool enable_persistence) {
     struct device *block = device_open(pathname);
     LogFS *logfs = malloc(sizeof(LogFS));
-    logfs->wb = wb_init(block);
+    // if (enable_persistence) {
+    //     logfs->meta = meta_load(block);
+    // } else {
+    // }
+    meta_init(&logfs->meta);
+
+    logfs->wb = wb_init(block, logfs->meta);
     logfs->cache = rc_init(block);
     return logfs;
 }
 
 void logfs_close(struct logfs *logfs) {
     wb_shutdown(logfs->wb);
+    //logfs->meta.current_block = logfs->wb->current_block;
+    //logfs->meta.current_offset = logfs->wb->append_head % logfs->wb->block_size;
+    //meta_save(&logfs->meta, logfs->wb->device);
+
     // free write buffer
     free(logfs->wb->device);
     free(logfs->wb->buf);
@@ -520,4 +603,22 @@ void logfs_close(struct logfs *logfs) {
     free(logfs);
 
     FREE(virtual_page);
+}
+
+u64 logfs_getsize(struct logfs *logfs) {
+    return (logfs->meta.current_block - RESERVED_BLOCKS) * logfs->wb->block_size + logfs->meta.current_offset;
+}
+
+void logfs_setmeta(struct logfs *logfs, u64 index_offset, u64 index_len) {
+    printf("Setting meta range to %d, %d\n", index_offset, index_len);
+    logfs->meta.index.address = index_offset;
+    logfs->meta.index.size = index_len;
+}
+
+u8 *logfs_readindex(struct logfs *logfs, /*out*/ u64 *len) {
+    u8 *buf = malloc(logfs->meta.index.size);
+    printf("Reading index %ld..%d from logfs into buf (size %ld)\n", logfs->meta.index.address, logfs->meta.index.address + logfs->meta.index.size, logfs->meta.index.size);
+    logfs_read(logfs, buf, logfs->meta.index.address, logfs->meta.index.size);
+    *len = logfs->meta.index.size;
+    return buf;
 }

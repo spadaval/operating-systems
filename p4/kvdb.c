@@ -197,10 +197,10 @@ mutate(struct kvdb *kvdb,
     return 0;
 }
 
-struct kvdb *
-kvdb_open(const char *pathname) {
+static struct kvdb *
+open(const char *pathname, bool enable_persistence) {
     struct kvdb *kvdb;
-
+    printf("opening %s with persistence %d \n", pathname, enable_persistence);
     assert(safe_strlen(pathname));
 
     if (!(kvdb = malloc(sizeof(struct kvdb)))) {
@@ -208,17 +208,41 @@ kvdb_open(const char *pathname) {
         return NULL;
     }
     memset(kvdb, 0, sizeof(struct kvdb));
-    if (!(kvdb->kvraw = kvraw_open(pathname)) ||
+    if (!(kvdb->kvraw = kvraw_open(pathname, enable_persistence)) ||
         !(kvdb->index = index_open())) {
         kvdb_close(kvdb);
         TRACE(0);
         return NULL;
     }
+    if (enable_persistence) {
+        u64 buf_len = 0;
+        u8 *buf = kvraw_getindex(kvdb->kvraw, &buf_len);
+        kvdb->index = index_deserialize(buf, buf_len);
+        printf("Loaded index with %ld bytes\n", buf_len);
+        index_print(kvdb->index);
+    }
     return kvdb;
+}
+
+struct kvdb *kvdb_open(const char *pathname) {
+    return open(pathname, false);
+}
+
+struct kvdb *kvdb_open_persistent(const char *pathname) {
+    return open(pathname, true);
 }
 
 void kvdb_close(struct kvdb *kvdb) {
     if (kvdb) {
+        // persist the index
+        u64 size = 0;
+        u8 *index_buf = index_serialize(kvdb->index, &size);
+        printf("Saving index with %ld bytes\n", size);
+        index_print(kvdb->index);
+        kvraw_saveindex(kvdb->kvraw, index_buf, size);
+
+        free(index_buf);
+
         kvraw_close(kvdb->kvraw);
         index_close(kvdb->index);
         memset(kvdb, 0, sizeof(struct kvdb));

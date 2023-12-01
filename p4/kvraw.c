@@ -10,7 +10,6 @@
 #include "kvraw.h"
 
 #include "logfs.h"
-
 #define META_LEN (sizeof(struct meta))
 
 #define KEY_OFF(o) ((o) + META_LEN)
@@ -51,7 +50,7 @@ read_meta(struct kvraw *kvraw, uint64_t off, struct meta *meta) {
 }
 
 struct kvraw *
-kvraw_open(const char *pathname) {
+kvraw_open(const char *pathname, bool enable_persistence) {
     struct kvraw *kvraw;
     uint64_t off = 0;
 
@@ -62,7 +61,7 @@ kvraw_open(const char *pathname) {
         return NULL;
     }
     memset(kvraw, 0, sizeof(struct kvraw));
-    if (!(kvraw->logfs = logfs_open(pathname))) {
+    if (!(kvraw->logfs = logfs_open(pathname, enable_persistence))) {
         kvraw_close(kvraw);
         TRACE(0);
         return NULL;
@@ -72,10 +71,16 @@ kvraw_open(const char *pathname) {
         TRACE(0);
         return NULL;
     }
+    if (enable_persistence) {
+        kvraw->size = logfs_getsize(kvraw->logfs);
+        printf("[kvraw] set size to %d\n", kvraw->size);
+    }
     return kvraw;
 }
 
 void kvraw_close(struct kvraw *kvraw) {
+    printf("[kvraw] size at close is %d\n", kvraw->size);
+
     if (kvraw) {
         logfs_close(kvraw->logfs);
         memset(kvraw, 0, sizeof(struct kvraw));
@@ -144,4 +149,13 @@ int kvraw_append(struct kvraw *kvraw,
     kvraw->size += META_LEN + meta.key_len + meta.val_len;
     (*off) = off_;
     return 0;
+}
+
+void kvraw_saveindex(struct kvraw *kvraw, uint8_t *buf, u64 buf_len) {
+    logfs_setmeta(kvraw->logfs, kvraw->size, buf_len);
+    logfs_append(kvraw->logfs, buf, buf_len);
+}
+
+u8 *kvraw_getindex(struct kvraw *kvraw, /*out*/ u64 *len) {
+    return logfs_readindex(kvraw->logfs, len);
 }

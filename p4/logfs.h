@@ -23,7 +23,7 @@ struct logfs;
  * return: an opaque handle or NULL on error
  */
 
-struct logfs *logfs_open(const char *pathname);
+struct logfs *logfs_open(const char *pathname, bool enable_persistence);
 
 /**
  * Closes a previously opened logfs handle.
@@ -59,5 +59,11 @@ int logfs_read(struct logfs *logfs, void *buf, uint64_t off, size_t len);
  */
 
 int logfs_append(struct logfs *logfs, const void *buf, uint64_t len);
+
+void logfs_setmeta(struct logfs *logfs, u64 index_offset, u64 index_len);
+
+u64 logfs_getsize(struct logfs *logfs);
+
+u8 *logfs_readindex(struct logfs *logfs, /*out*/ u64* len);
 
 #endif /* _LOGFS_H_ */

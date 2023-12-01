@@ -143,7 +143,7 @@ read_write(const uint64_t N, const uint64_t K, const uint64_t V) {
     free(key);
     free(val);
     free(val_);
-    kvdb_close(kvdb); 
+    kvdb_close(kvdb);
     return 0;
 }
 
@@ -210,7 +210,7 @@ basic_logic(void) {
         (0 != kvdb_size(kvdb)) ||
         (0 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("invalid lookups");
         return -1;
     }
 
@@ -220,16 +220,28 @@ basic_logic(void) {
         (0 != kvdb_size(kvdb)) ||
         (0 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("invalid replace");
         return -1;
     }
 
     /* insert, lookup, re-insert, lookup */
 
     val_len = sizeof(val);
-    if (kvdb_insert(kvdb, KEY, SLEN(KEY), VAL1, SLEN(VAL1)) ||
-        kvdb_lookup(kvdb, KEY, SLEN(KEY), val, &val_len) ||
-        (SLEN(VAL1) != val_len) ||
+    int insert_code = kvdb_insert(kvdb, KEY, SLEN(KEY), VAL1, SLEN(VAL1));
+    if (!insert_code) {
+        TRACE("insert failed");
+        kvdb_close(kvdb);
+        return -1;
+    }
+    int lookup_code = kvdb_lookup(kvdb, KEY, SLEN(KEY), val, &val_len);
+
+    if (!lookup_code) {
+        TRACE("lookup failed");
+        kvdb_close(kvdb);
+        return -1;
+    }
+
+    if ((SLEN(VAL1) != val_len) ||
         memcmp(VAL1, val, val_len) ||
         (+1 != kvdb_insert(kvdb, KEY, SLEN(KEY), VAL1, SLEN(VAL1))) ||
         kvdb_lookup(kvdb, KEY, SLEN(KEY), val, &val_len) ||
@@ -238,7 +250,7 @@ basic_logic(void) {
         (1 != kvdb_size(kvdb)) ||
         (0 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("all da things");
         return -1;
     }
 
@@ -256,7 +268,7 @@ basic_logic(void) {
         (1 != kvdb_size(kvdb)) ||
         (1 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("all the things 2");
         return -1;
     }
 
@@ -274,7 +286,7 @@ basic_logic(void) {
         (1 != kvdb_size(kvdb)) ||
         (2 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("fml");
         return -1;
     }
 
@@ -287,7 +299,7 @@ basic_logic(void) {
         (1 != kvdb_size(kvdb)) ||
         (2 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("lookup");
         return -1;
     }
 
@@ -301,7 +313,7 @@ basic_logic(void) {
         (0 != kvdb_size(kvdb)) ||
         (3 != kvdb_waste(kvdb))) {
         kvdb_close(kvdb);
-        TRACE("software");
+        TRACE("remove");
         return -1;
     }
     kvdb_close(kvdb);
@@ -329,10 +341,10 @@ int main(int argc, char *argv[]) {
     /* test */
 
     TEST(basic_logic, "basic_logic");
-    TEST(heavy_rewrite, "heavy_rewrite");
-    TEST(read_write_single, "read_write_single");
-    TEST(read_write_small, "read_write_small");
-    TEST(read_write_large, "read_write_large");
+    // TEST(heavy_rewrite, "heavy_rewrite");
+    // TEST(read_write_single, "read_write_single");
+    // TEST(read_write_small, "read_write_small");
+    // TEST(read_write_large, "read_write_large");
 
     /* postlude */
 

@@ -19,6 +19,8 @@ struct kvdb;
 
 struct kvdb *kvdb_open(const char *pathname);
 
+struct kvdb *kvdb_open_persistent(const char *pathname);
+
 void kvdb_close(struct kvdb *kvdb);
 
 int /* -1|0|+1 */
