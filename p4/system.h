@@ -10,51 +10,58 @@
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
 
-#include <time.h>
-#include <errno.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <string.h>
 #include <assert.h>
+#include <ctype.h>
+#include <errno.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-#define MIN(x,y) ( ((x) < (y)) ? (x) : (y) )
-#define MAX(x,y) ( ((x) > (y)) ? (x) : (y) )
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
-#define ARRAY_SIZE(a) ( (sizeof (a)) / (sizeof (a[0])) )
+#define ARRAY_SIZE(a) ((sizeof(a)) / (sizeof(a[0])))
 
-#define UNUSED(s)				\
-	do {					\
-		(void)(s);			\
-	} while (0)
+#define UNUSED(s)  \
+    do {           \
+        (void)(s); \
+    } while (0)
 
-#define TRACE(s)				\
-	do {					\
-		fprintf(stderr,			\
-			"error: %s:%d: %s\n",	\
-			__FILE__,		\
-			__LINE__,		\
-			safe_strlen(s) ?	\
-			(s) : "^");		\
-	} while (0)
+#define TRACE(s)                             \
+    do {                                     \
+        fprintf(stderr,                      \
+                "error: %s:%d: %s\n",        \
+                __FILE__,                    \
+                __LINE__,                    \
+                safe_strlen(s) ? (s) : "^"); \
+    } while (0)
 
-#define EXIT(s)					\
-	do {					\
-		TRACE((s));			\
-		assert( 0 );			\
-		exit(-1);			\
-	} while (0)
+#define EXIT(s)     \
+    do {            \
+        TRACE((s)); \
+        assert(0);  \
+        exit(-1);   \
+    } while (0)
 
-#define FREE(p)					\
-	do {					\
-		if ((p)) {			\
-			free((void *)(p));	\
-			(p) = NULL;		\
-		}				\
-	} while (0)
+#define FREE(p)                \
+    do {                       \
+        if ((p)) {             \
+            free((void *)(p)); \
+            (p) = NULL;        \
+        }                      \
+    } while (0)
+
+// unsigned 8-bit
+#define u8 uint_fast8_t
+// unsigned 64-bit
+#define u64 uint64_t
+// An integer large enough to hold a pointer
+#define usize uint64_t
 
 uint64_t ref_time(void);
 
