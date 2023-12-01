@@ -10,15 +10,41 @@
 #include "index.h"
 
 #define LOAD 0.70
-
+struct map {
+    uint64_t key;
+    uint64_t off;
+};
 struct index {
     uint64_t size;
     uint64_t capacity;
-    struct {
-        uint64_t key;
-        uint64_t off;
-    } *maps;
+    struct map *maps;
 };
+
+u8 *index_serialize(struct index *index, /*out*/ u64 *len) {
+    // serialized as a simple unsized array
+    const u64 bytes = sizeof(struct map) * index->size;
+    u8 *buf = malloc(bytes);
+    *len = bytes;
+    memcpy(buf, index->maps, bytes);
+    return buf;
+}
+
+struct index *index_deserialize(/*move*/ u8 *buf, u64 len) {
+    struct index *index = index_open();
+    index->maps = buf;
+    const int entries = len / sizeof(struct map);
+    index->size = entries;
+    index->capacity = entries;
+    return index;
+}
+
+void index_print(struct index *index) {
+    printf("index: %lu entries\n", index->size);
+    for (int i = 0; i < index->size; ++i) {
+        struct map *map = &index->maps[i];
+        printf("  %lu->%lu\n", map->key, map->off);
+    }
+}
 
 static uint64_t
 hash(const void *buf, uint64_t len) {
