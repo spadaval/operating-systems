@@ -1,22 +1,23 @@
 {
-    "configurations": [
-        {
-            "name": "linux-gcc-x64",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "${default}",
-            "cppStandard": "${default}",
-            "intelliSenseMode": "linux-gcc-x64",
-            "compilerArgs": [
-                ""
-            ],
-            "browse": {
-                "databaseFilename": " ${workspaceFolder}/.vscode/browse.vc.db"
-            },
-            "configurationProvider": "ms-vscode.makefile-tools"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "linux-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "linux-gcc-x64",
+      "compilerArgs": [
+        ""
+      ],
+      "browse": {
+        "databaseFilename": " ${workspaceFolder}/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": true,
+        "path": []
+      }
+    }
+  ],
+  "version": 4
 }
