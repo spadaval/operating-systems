@@ -370,7 +370,7 @@ typedef struct ReadCache {
     u8* unaligned;
     u8 *read_cache;
     // the pages contained in the read_cache.
-    // -1 means the page is not free.
+    // -1 means the page is free.
     int pages[RCACHE_BLOCKS];
     // simple round-robin eviction policy.
     // TODO second-chance/LRU
