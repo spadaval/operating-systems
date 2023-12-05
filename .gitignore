@@ -54,3 +54,5 @@ dkms.conf
 # VC db files (for autocomplete stuff)
 # openlab is restrictive about where you can put files
 **/browse.vc.db*
+
+cs238
