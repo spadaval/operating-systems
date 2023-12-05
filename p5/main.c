@@ -8,25 +8,51 @@
  */
 
 #include <signal.h>
+#include <stdbool.h>
 
 #include "system.h"
+
+#define u64 uint64_t
+#define u32 uint32_t
 
 /**
  * Needs:
  *   signal()
  */
 
-static volatile int done;
+enum Mode {
+    MEM = 42,
+    CPU,
+    UPTIME,
+    NETWORK,
+    DONE
+};
 
-static void
-_signal_(int signum) {
+const char *const PROC_STAT = "/proc/stat";
+const char *const PROC_UPTIME = "/proc/uptime";
+const char *const PROC_MEMINFO = "/proc/meminfo";
+const char *const PROC_NET = "/proc/net/dev";
+
+static volatile enum Mode mode = MEM;
+
+static void install_interrupt_handler();
+
+static void on_interrupt(int signum) {
     assert(SIGINT == signum);
-
-    done = 1;
+    mode += 1;
+    // thus makes term IO look clean for some reason. Not gonna question it too much.
+    printf("\r                                                                                              \r");
+    install_interrupt_handler();
 }
 
-double
-cpu_util(const char *s) {
+void install_interrupt_handler() {
+    if (SIG_ERR == signal(SIGINT, on_interrupt)) {
+        TRACE("signal()");
+        exit(-1);
+    }
+}
+
+double parse_cpu(const char *s) {
     static unsigned sum_, vector_[7];
     unsigned sum, vector[7];
     const char *p;
@@ -42,14 +68,6 @@ cpu_util(const char *s) {
       irq
       softirq
     */
-
-    vector[0] = rand();
-    vector[1] = rand();
-    vector[2] = rand();
-    vector[3] = rand();
-    vector[4] = rand();
-    vector[5] = rand();
-    vector[6] = rand();
 
     if (!(p = strstr(s, " ")) ||
         (7 != sscanf(p,
@@ -75,29 +93,149 @@ cpu_util(const char *s) {
     return util;
 }
 
-int main(int argc, char *argv[]) {
-    const char *const PROC_STAT = "/proc/stat";
+int print_cpu() {
     char line[1024];
     FILE *file;
 
+    if (!(file = fopen(PROC_STAT, "r"))) {
+        TRACE("fopen()");
+        return -1;
+    }
+    if (fgets(line, sizeof(line), file)) {
+        printf("\rCPU %5.1f%%", parse_cpu(line));
+        fflush(stdout);
+    }
+    fclose(file);
+    return 0;
+}
+
+double print_uptime() {
+    char line[1024];
+    FILE *file;
+
+    if (!(file = fopen(PROC_UPTIME, "r"))) {
+        TRACE("fopen()");
+        return -1;
+    }
+    if (fgets(line, sizeof(line), file)) {
+        float time = 0;
+        float idle = 0;
+        sscanf(line, "%f %f", &time, &idle);
+        printf("\rUptime: %.0f seconds (idle for %.0f seconds)", time, idle);
+        fflush(stdout);
+    }
+    fclose(file);
+    return 0;
+}
+
+char sizes[3][3] = {"KB", "MB", "GB"};
+
+u64 parse_num(char line[1024]) {
+    int i = 0;
+    // skip past the :
+    while (line[i] != ':') i++;
+    i++;
+    // skip past the spaces
+    while (line[i] == ' ') i++;
+    i++;
+
+    u64 val = 0;
+    while (line[i] >= '0' && line[i] <= '9') {
+        val = val * 10 + (line[i] - '0');
+        i++;
+    }
+    return val;
+}
+
+double print_memory() {
+    char line[1024];
+    FILE *file;
+
+    if (!(file = fopen(PROC_MEMINFO, "r"))) {
+        TRACE("fopen()");
+        return -1;
+    }
+
+    if (fgets(line, sizeof(line), file) == 0) exit(-1);
+    u64 total = parse_num(line);
+    if (fgets(line, sizeof(line), file) == 0) exit(-1);
+    u64 free = parse_num(line);
+
+    printf("\r[MEM] %lu KB free of %lu KB", free, total);
+    fflush(stdout);
+
+    fclose(file);
+    return 0;
+}
+
+int print_network() {
+    static u64 prev_recv = 0, prev_snd = 0;
+
+    char line[4096];
+    FILE *file;
+
+    if (!(file = fopen(PROC_NET, "r"))) {
+        TRACE("fopen()");
+        return -1;
+    }
+
+    // skip the headers
+    if (fgets(line, sizeof(line), file) == 0) exit(-1);
+    if (fgets(line, sizeof(line), file) == 0) exit(-1);
+
+    // note: there may be an arbitrary amount of spaces anywhere
+    // face: bytes packets errs drop fifo frame compressed multicast bytes packets errs drop fifo colls carrier compressed
+    if (fgets(line, sizeof(line), file) == 0) exit(-1);
+    u64 *data = malloc(sizeof(u64) * 16);
+
+    int i = 0;
+    // skip till past the :
+    while (line[i] != ':') i++;
+    i++;
+
+    while (line[i] == ' ') i++;
+
+    for (int x = 0; x < 16; x++) {
+        int num = 0;
+        // read a number
+        while (line[i] >= '0' && line[i] <= '9') {
+            num = num * 10 + (line[i] - '0');
+            i++;
+        }
+        data[x] = num;
+        // skip extra space
+        while (line[i] == ' ') i++;
+    }
+
+    u64 just_recv = data[0] - prev_recv;
+    u64 just_sent = data[8] - prev_snd;
+    prev_recv = data[0];
+    prev_snd = data[8];
+    printf("\r[NET] send %10.1f KB, rcv %10.1f KB", just_sent / 1024.0, just_recv / 1024.0);
+    fflush(stdout);
+
+    fclose(file);
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
     UNUSED(argc);
     UNUSED(argv);
 
-    if (SIG_ERR == signal(SIGINT, _signal_)) {
-        TRACE("signal()");
-        return -1;
-    }
-    while (!done) {
-        if (!(file = fopen(PROC_STAT, "r"))) {
-            TRACE("fopen()");
-            return -1;
-        }
-        if (fgets(line, sizeof(line), file)) {
-            printf("\r%5.1f%%", cpu_util(line));
-            fflush(stdout);
-        }
+    install_interrupt_handler();
+
+    while (true) {
+        if (mode == CPU) {
+            print_cpu();
+        } else if (mode == UPTIME) {
+            print_uptime();
+        } else if (mode == MEM) {
+            print_memory();
+        } else if (mode == NETWORK) {
+            print_network();
+        } else
+            break;
         us_sleep(500000);
-        fclose(file);
     }
     printf("\rDone!   \n");
     return 0;
