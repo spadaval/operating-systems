@@ -20,6 +20,19 @@
  *   signal()
  */
 
+#include <unistd.h>
+
+#define UNWRAP(x)        \
+    if ((x) == -1) {     \
+        perror("error"); \
+        exit(-1);        \
+    }
+
+void clearScreen() {
+    //printf("\033[2J");
+    printf("\r                                                                                                                                                   \r");
+}
+
 enum Mode {
     MEM = 42,
     CPU,
@@ -40,8 +53,6 @@ static void install_interrupt_handler();
 static void on_interrupt(int signum) {
     assert(SIGINT == signum);
     mode += 1;
-    // thus makes term IO look clean for some reason. Not gonna question it too much.
-    printf("\r                                                                                              \r");
     install_interrupt_handler();
 }
 
@@ -183,38 +194,45 @@ int print_network() {
     if (fgets(line, sizeof(line), file) == 0) exit(-1);
     if (fgets(line, sizeof(line), file) == 0) exit(-1);
 
-    // note: there may be an arbitrary amount of spaces anywhere
-    // face: bytes packets errs drop fifo frame compressed multicast bytes packets errs drop fifo colls carrier compressed
-    if (fgets(line, sizeof(line), file) == 0) exit(-1);
-    u64 *data = malloc(sizeof(u64) * 16);
+    u64 recv = 0, snd = 0;
+    while (fgets(line, sizeof(line), file) != 0) {
+        // note: there may be an arbitrary amount of spaces anywhere
+        // here's the data format
+        // face: bytes packets errs drop fifo frame compressed multicast bytes packets errs drop fifo colls carrier compressed
+        //       ^ (pos 0)                                             ^ (pos 8)
+        if (fgets(line, sizeof(line), file) == 0) exit(-1);
+        u64 *data = malloc(sizeof(u64) * 16);
 
-    int i = 0;
-    // skip till past the :
-    while (line[i] != ':') i++;
-    i++;
+        int i = 0;
+        // skip till past the `face:`
+        while (line[i] != ':') i++;
+        i++;
 
-    while (line[i] == ' ') i++;
-
-    for (int x = 0; x < 16; x++) {
-        int num = 0;
-        // read a number
-        while (line[i] >= '0' && line[i] <= '9') {
-            num = num * 10 + (line[i] - '0');
-            i++;
-        }
-        data[x] = num;
-        // skip extra space
         while (line[i] == ' ') i++;
+
+        // parse all 16 numbers in the line
+        for (int x = 0; x < 16; x++) {
+            int num = 0;
+            // read a number
+            while (line[i] >= '0' && line[i] <= '9') {
+                num = num * 10 + (line[i] - '0');
+                i++;
+            }
+            data[x] = num;
+            // skip white space
+            while (line[i] == ' ') i++;
+        }
+
+        recv += data[0];
+        snd = data[8];
     }
-
-    u64 just_recv = data[0] - prev_recv;
-    u64 just_sent = data[8] - prev_snd;
-    prev_recv = data[0];
-    prev_snd = data[8];
-    printf("\r[NET] send %10.1f KB, rcv %10.1f KB", just_sent / 1024.0, just_recv / 1024.0);
-    fflush(stdout);
-
     fclose(file);
+
+    printf("\r[NET] send ↑%5.1f KB, rcv ↓%10.1f KB", (snd - prev_snd) / 1024.0, (recv - prev_recv) / 1024.0);
+    fflush(stdout);
+    prev_recv = recv;
+    prev_snd = snd;
+
     return 0;
 }
 
@@ -225,6 +243,7 @@ int main(int argc, char *argv[]) {
     install_interrupt_handler();
 
     while (true) {
+        clearScreen();
         if (mode == CPU) {
             print_cpu();
         } else if (mode == UPTIME) {
