@@ -14,6 +14,7 @@
 
 #define u64 uint64_t
 #define u32 uint32_t
+#define u8 uint8_t
 
 /**
  * Needs:
@@ -28,13 +29,9 @@
         exit(-1);        \
     }
 
-void clearScreen() {
-    //printf("\033[2J");
-    printf("\r                                                                                                                                                   \r");
-}
-
 enum Mode {
-    MEM = 42,
+    ALL = 42,
+    MEM,
     CPU,
     UPTIME,
     NETWORK,
@@ -46,7 +43,7 @@ const char *const PROC_UPTIME = "/proc/uptime";
 const char *const PROC_MEMINFO = "/proc/meminfo";
 const char *const PROC_NET = "/proc/net/dev";
 
-static volatile enum Mode mode = MEM;
+static volatile enum Mode mode = ALL;
 
 static void install_interrupt_handler();
 
@@ -58,8 +55,7 @@ static void on_interrupt(int signum) {
 
 void install_interrupt_handler() {
     if (SIG_ERR == signal(SIGINT, on_interrupt)) {
-        TRACE("signal()");
-        exit(-1);
+        EXIT("signal");
     }
 }
 
@@ -104,39 +100,38 @@ double parse_cpu(const char *s) {
     return util;
 }
 
-int print_cpu() {
+int print_cpu(char *str) {
     char line[1024];
     FILE *file;
 
     if (!(file = fopen(PROC_STAT, "r"))) {
-        TRACE("fopen()");
-        return -1;
+        EXIT("fopen");
     }
+    int bytes = 0;
     if (fgets(line, sizeof(line), file)) {
-        printf("\rCPU %5.1f%%", parse_cpu(line));
-        fflush(stdout);
+        bytes = snprintf(str, 2048, "CPU %5.1f%%", parse_cpu(line));
     }
     fclose(file);
-    return 0;
+    return bytes;
 }
 
-double print_uptime() {
+int print_uptime(char *str) {
     char line[1024];
     FILE *file;
 
     if (!(file = fopen(PROC_UPTIME, "r"))) {
-        TRACE("fopen()");
-        return -1;
+        EXIT("fopen()");
     }
+    int bytes = 0;
     if (fgets(line, sizeof(line), file)) {
         float time = 0;
         float idle = 0;
         sscanf(line, "%f %f", &time, &idle);
-        printf("\rUptime: %.0f seconds (idle for %.0f seconds)", time, idle);
+        bytes = snprintf(str, 2048, "Uptime: %.0f seconds (idle for %.0f seconds)", time, idle);
         fflush(stdout);
     }
     fclose(file);
-    return 0;
+    return bytes;
 }
 
 char sizes[3][3] = {"KB", "MB", "GB"};
@@ -158,7 +153,7 @@ u64 parse_num(char line[1024]) {
     return val;
 }
 
-double print_memory() {
+int print_memory(char *str) {
     char line[1024];
     FILE *file;
 
@@ -172,28 +167,27 @@ double print_memory() {
     if (fgets(line, sizeof(line), file) == 0) exit(-1);
     u64 free = parse_num(line);
 
-    printf("\r[MEM] %lu KB free of %lu KB", free, total);
-    fflush(stdout);
+    int bytes = snprintf(str, 2048, "[MEM] %lu KB free of %lu KB", free, total);
 
     fclose(file);
-    return 0;
+    return bytes;
 }
 
-int print_network() {
+int print_network(char *str) {
     static u64 prev_recv = 0, prev_snd = 0;
 
     char line[4096];
     FILE *file;
 
     if (!(file = fopen(PROC_NET, "r"))) {
-        TRACE("fopen()");
-        return -1;
+        EXIT("fopen");
     }
 
     // skip the headers
     if (fgets(line, sizeof(line), file) == 0) exit(-1);
     if (fgets(line, sizeof(line), file) == 0) exit(-1);
 
+    u64 data[16];
     u64 recv = 0, snd = 0;
     while (fgets(line, sizeof(line), file) != 0) {
         // note: there may be an arbitrary amount of spaces anywhere
@@ -201,7 +195,6 @@ int print_network() {
         // face: bytes packets errs drop fifo frame compressed multicast bytes packets errs drop fifo colls carrier compressed
         //       ^ (pos 0)                                             ^ (pos 8)
         if (fgets(line, sizeof(line), file) == 0) exit(-1);
-        u64 *data = malloc(sizeof(u64) * 16);
 
         int i = 0;
         // skip till past the `face:`
@@ -228,32 +221,44 @@ int print_network() {
     }
     fclose(file);
 
-    printf("\r[NET] send ↑%5.1f KB, rcv ↓%10.1f KB", (snd - prev_snd) / 1024.0, (recv - prev_recv) / 1024.0);
-    fflush(stdout);
+    int bytes = snprintf(str, 2048, "[NET] send ↑%5.1f KB, rcv ↓%10.1f KB", (snd - prev_snd) / 1024.0, (recv - prev_recv) / 1024.0);
     prev_recv = recv;
     prev_snd = snd;
 
-    return 0;
+    return bytes;
 }
 
 int main(int argc, char *argv[]) {
     UNUSED(argc);
     UNUSED(argv);
+    char buffer[2048];
 
     install_interrupt_handler();
 
     while (true) {
-        clearScreen();
-        if (mode == CPU) {
-            print_cpu();
+        if (mode == ALL) {
+            char *b = buffer;
+            b += print_cpu(b);
+            *b++ = '\t';
+            b += print_uptime(b);
+            *b++ = '\t';
+            b += print_memory(b);
+            *b++ = '\t';
+            b += print_network(b);
+        } else if (mode == CPU) {
+            print_cpu(buffer);
         } else if (mode == UPTIME) {
-            print_uptime();
+            print_uptime(buffer);
         } else if (mode == MEM) {
-            print_memory();
+            print_memory(buffer);
         } else if (mode == NETWORK) {
-            print_network();
+            print_network(buffer);
         } else
             break;
+        printf("                                                                                                                                                     \r");
+        fflush(stdout);
+        printf("\r%s", buffer);
+        fflush(stdout);
         us_sleep(500000);
     }
     printf("\rDone!   \n");
